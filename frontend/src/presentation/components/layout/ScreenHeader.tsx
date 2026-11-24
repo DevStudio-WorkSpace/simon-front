@@ -49,7 +49,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({ title }) => {
         </div>
 
         {/* Center View Title (Visible on md and larger) */}
-        <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 text-center pointer-events-none">
+        <div className="hidden md:block absolute left-[40%] transform -translate-x-1/2 text-center pointer-events-none">
           <h1 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {displayTitle}
           </h1>
