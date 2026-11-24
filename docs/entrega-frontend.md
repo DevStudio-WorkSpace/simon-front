@@ -9,3 +9,12 @@
 - Diferencias con el diseño: pendiente de confirmar la identidad visual oficial y el contenido del sprint.
 - Preguntas abiertas: logo oficial, referencia local del sprint y contratos reales del backend.
 
+## SIMON-S1-T03
+
+- Estado: terminado
+- Commits: `265c1f3` implementación; `66706f4` pruebas
+- Archivos principales: `src/types/pantalla.ts`, `src/mocks/pantalla.json`, `src/lib/api/`
+- Verificación: `npm run lint`, `npx tsc --noEmit`, `npm test`, `npm run build`
+- Diferencias con el diseño: los campos reales deben confirmarse con `referencia-local/SPRINT.md` y el backend.
+- Preguntas abiertas: modelo exacto de `pantallas_estado`, nombres finales de campos y contrato de órdenes.
+
