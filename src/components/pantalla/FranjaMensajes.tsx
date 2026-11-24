@@ -15,13 +15,14 @@ export function FranjaMensajes({ mensajes }: { mensajes: MensajeMarquesina[] }) 
   });
 
   return (
-    <footer className="flex h-[82px] items-center gap-5 overflow-hidden border-t border-gray-200 bg-white px-[34px]">
+    <footer className="grid h-[120px] grid-cols-5 items-center gap-3 border-t border-gray-200 bg-white px-[34px] py-3">
       {ordenados.map((mensaje) => (
         <div
           key={`${mensaje.tipo}-${mensaje.texto}`}
-          className={`min-w-[340px] rounded-lg border-l-8 px-5 py-4 text-[28px] ${clases[mensaje.tipo]}`}
+          className={`h-[88px] overflow-hidden rounded-lg border-l-8 px-3 py-2 text-[28px] leading-[32px] ${clases[mensaje.tipo]}`}
         >
-          <strong>{mensaje.tipo}: </strong>{mensaje.texto}
+          <strong>{mensaje.tipo}: </strong>
+          <span className="line-clamp-2">{mensaje.texto}</span>
         </div>
       ))}
     </footer>

@@ -151,7 +151,7 @@ export default function Pantalla({ params }: { params: Promise<{ codigo: string 
   }
 
   return (
-    <main className="mx-auto h-screen min-h-[1080px] w-screen max-w-[1920px] overflow-hidden bg-white text-[28px]">
+    <main className="grid h-screen w-screen grid-rows-[124px_6px_minmax(0,1fr)_120px] overflow-hidden bg-white text-[28px]">
       {sinConexion && (
         <div role="alert" className="absolute left-1/2 top-32 z-10 -translate-x-1/2 rounded-lg bg-amber-100 px-8 py-5 text-amber-900">
           Sin conexión. Último dato recibido: {horaUltimoDato || "no disponible"}
@@ -164,7 +164,7 @@ export default function Pantalla({ params }: { params: Promise<{ codigo: string 
           style={{ width: `${(estado.vista_actual / 6) * 100}%` }}
         />
       </div>
-      <section className="h-[868px] border-b-2 border-gray-100 px-[34px] py-[24px]">
+      <section className="min-h-0 overflow-hidden border-b-2 border-gray-100 px-[34px] py-[20px]">
         {estado.vista_actual === 1 && (
           <VistaServicios servicios={estado.servicios} pagina={1} indicadores={estado.indicadores_servicios} />
         )}
