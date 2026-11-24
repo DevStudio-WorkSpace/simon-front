@@ -1,5 +1,13 @@
 import type { Metadata } from 'next';
+import localFont from 'next/font/local';
 import './globals.css';
+
+const montserrat = localFont({
+  src: './fonts/Montserrat-Variable.ttf',
+  weight: '100 900',
+  display: 'swap',
+  variable: '--font-montserrat',
+});
 
 export const metadata: Metadata = {
   title: 'SIMON — GO Service LATAM',
@@ -17,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html lang="es" className={montserrat.variable} suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" href="/icon.png" />
         <script

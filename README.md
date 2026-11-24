@@ -48,7 +48,7 @@ Para asegurar un entorno de trabajo colaborativo, respetuoso y alineado con los 
 - **Estilos:** [Tailwind CSS 3.4](https://tailwindcss.com/) + CSS Variables
 - **Gestión de Estado:** [Zustand 5](https://github.com/pmndrs/zustand)
 - **Iconografía:** [Lucide React](https://lucide.dev/)
-- **Fuente Tipográfica:** Inter / San Francisco (Display limpio para Android TV)
+- **Fuente Tipográfica:** Montserrat variable (incluida en el proyecto)
 
 ---
 
