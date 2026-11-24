@@ -26,6 +26,30 @@ export default function Pantalla({ params }: { params: Promise<{ codigo: string 
   }, [params]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const parametros = new URLSearchParams(window.location.search);
+    if (parametros.get("debug") !== "memoria") return;
+
+    const memoria = (window.performance as typeof window.performance & {
+      memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number };
+    }).memory;
+    if (!memoria) {
+      console.info("SIMON debug memoria: este navegador no expone performance.memory.");
+      return;
+    }
+    const registrar = () => {
+      console.info("SIMON memoria", {
+        usado_bytes: memoria.usedJSHeapSize,
+        total_bytes: memoria.totalJSHeapSize,
+        limite_bytes: memoria.jsHeapSizeLimit,
+      });
+    };
+    registrar();
+    const temporizador = window.setInterval(registrar, 5 * 60 * 1000);
+    return () => window.clearInterval(temporizador);
+  }, []);
+
+  useEffect(() => {
     const inicio = window.setTimeout(() => {
       setFechaHora(new Intl.DateTimeFormat("es-PE", {
         dateStyle: "short",
