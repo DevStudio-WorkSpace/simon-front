@@ -36,3 +36,39 @@
 - Diferencias con el diseño: la paginación cambia cada 9 registros y conserva tipografía.
 - Preguntas abiertas: confirmar nombres y campos finales del modelo de puntualidad.
 
+## SIMON-S1-T13
+
+- Estado: terminado
+- Commits: `e039c99` implementación; `5307c1b` pruebas
+- Archivos principales: `src/components/pantalla/VistaRanking.tsx`, `src/components/pantalla/VistaMeta.tsx`
+- Verificación: lint, typecheck, test y build sin errores.
+- Diferencias con el diseño: solo tres posiciones, sin montos.
+- Preguntas abiertas: confirmar datos reales calculados por el backend.
+
+## SIMON-S1-T14
+
+- Estado: terminado
+- Commits: `07559c9` implementación; `f460e4` pruebas
+- Archivos principales: `src/components/pantalla/VistaAnuncios.tsx`, `src/components/pantalla/VistaActividades.tsx`
+- Verificación: lint, typecheck, test y build sin errores.
+- Diferencias con el diseño: las validadas no se muestran.
+- Preguntas abiertas: confirmar vigencia y responsables reales de anuncios.
+
+## SIMON-S1-T15
+
+- Estado: terminado
+- Commits: `0595e86` implementación; `a7e8267` pruebas; `b2bbfbb` documentación
+- Archivos principales: `src/app/admin/page.tsx`, `src/lib/api/`
+- Verificación: lint, typecheck, test y build sin errores.
+- Diferencias con el diseño: modo mock permite ingresar en pruebas.
+- Preguntas abiertas: permisos de creación, asignación y validación.
+
+## SIMON-S1-T16
+
+- Estado: terminado
+- Commits: `bd38671` implementación; `e75b5df` pruebas y guía
+- Archivos principales: `docs/instalacion-tv.md`, `docs/pruebas/mvp.md`, modo memoria
+- Verificación: lint, typecheck, test y build sin errores.
+- Diferencias con el diseño: pruebas físicas pendientes.
+- Preguntas abiertas: licencia de app de kiosco y modelo físico del Android TV.
+

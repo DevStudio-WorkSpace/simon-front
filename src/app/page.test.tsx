@@ -1,10 +1,15 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("next/navigation", () => ({
+  redirect: vi.fn(),
+}));
+
+import { redirect } from "next/navigation";
 import Home from "./page";
 
 describe("Página base", () => {
-  it("muestra la identificación de SIMON", () => {
-    render(<Home />);
-    expect(screen.getByRole("heading", { name: "SIMON" })).toBeInTheDocument();
+  it("redirige a la pantalla principal", () => {
+    Home();
+    expect(redirect).toHaveBeenCalledWith("/pantalla/sala");
   });
 });
