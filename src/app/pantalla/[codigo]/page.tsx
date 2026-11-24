@@ -5,6 +5,8 @@ import { CabeceraPantalla } from "@/components/pantalla/CabeceraPantalla";
 import { FranjaMensajes } from "@/components/pantalla/FranjaMensajes";
 import { VistaServicios } from "@/components/pantalla/VistaServicios";
 import { VistaPuntualidad } from "@/components/pantalla/VistaPuntualidad";
+import { VistaRanking } from "@/components/pantalla/VistaRanking";
+import { VistaMeta } from "@/components/pantalla/VistaMeta";
 import { useTecladoPantalla } from "@/components/pantalla/TecladoPantalla";
 import { pantallaApi } from "@/lib/api";
 import type { AccionPantalla } from "@/lib/api";
@@ -103,7 +105,11 @@ export default function Pantalla({ params }: { params: Promise<{ codigo: string 
     ? "Servicios de hoy"
     : estado?.vista_actual === 2
       ? "Puntualidad de hoy"
-      : `Vista ${estado?.vista_actual}/6`;
+      : estado?.vista_actual === 3
+        ? "Ranking del mes"
+        : estado?.vista_actual === 4
+          ? "Meta del mes"
+          : `Vista ${estado?.vista_actual}/6`;
 
   if (!estado) {
     return (
@@ -135,7 +141,13 @@ export default function Pantalla({ params }: { params: Promise<{ codigo: string 
         {estado.vista_actual === 2 && (
           <VistaPuntualidad puntualidad={estado.puntualidad} />
         )}
-        {estado.vista_actual > 2 && (
+        {estado.vista_actual === 3 && (
+          <VistaRanking personas={estado.ranking} />
+        )}
+        {estado.vista_actual === 4 && (
+          <VistaMeta meta={estado.meta_mes} />
+        )}
+        {estado.vista_actual > 4 && (
           <h2 className="text-[80px] font-bold text-[var(--magenta)]">
             Vista {estado.vista_actual}/6
           </h2>
