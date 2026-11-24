@@ -18,3 +18,12 @@
 - Diferencias con el diseño: los campos reales deben confirmarse con `referencia-local/SPRINT.md` y el backend.
 - Preguntas abiertas: modelo exacto de `pantallas_estado`, nombres finales de campos y contrato de órdenes.
 
+## SIMON-S1-T11
+
+- Estado: terminado
+- Commits: `f4860d5` implementación; `326c3e1` pruebas
+- Archivos principales: `src/app/pantalla/[codigo]/page.tsx`, `src/components/pantalla/`, `src/lib/pantalla.ts`
+- Verificación: `npm run lint`, `npx tsc --noEmit`, `npm test`, `npm run build`
+- Diferencias con el diseño: el contenido central continúa pendiente hasta T12-T14.
+- Preguntas abiertas: hora real del último dato depende del campo confirmado por el backend.
+
