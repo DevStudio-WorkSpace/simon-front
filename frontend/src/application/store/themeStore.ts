@@ -11,6 +11,7 @@ interface ThemeState {
 }
 
 const STORAGE_KEY = 'simon-theme';
+const SCHEDULE_CHECK_MS = 60_000;
 
 function getStoredTheme(): ThemeMode {
   if (typeof window === 'undefined') return 'system';
@@ -25,9 +26,9 @@ function getStoredTheme(): ThemeMode {
   return 'system';
 }
 
-function resolveSystemTheme(): 'light' | 'dark' {
-  if (typeof window === 'undefined') return 'light';
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+function resolveScheduledTheme(date: Date = new Date()): 'light' | 'dark' {
+  const hour = date.getHours();
+  return hour >= 18 || hour < 6 ? 'dark' : 'light';
 }
 
 function applyHtmlClass(resolved: 'light' | 'dark') {
@@ -40,8 +41,22 @@ function applyHtmlClass(resolved: 'light' | 'dark') {
 }
 
 export const useThemeStore = create<ThemeState>((set, get) => {
+  let scheduleTimer: ReturnType<typeof setInterval> | null = null;
+
+  const startScheduleWatcher = () => {
+    if (scheduleTimer) return;
+    scheduleTimer = setInterval(() => {
+      if (get().theme !== 'system') return;
+      const resolved = resolveScheduledTheme();
+      if (get().resolvedTheme !== resolved) {
+        applyHtmlClass(resolved);
+        set({ resolvedTheme: resolved });
+      }
+    }, SCHEDULE_CHECK_MS);
+  };
+
   const initialTheme = getStoredTheme();
-  const initialResolved = initialTheme === 'system' ? resolveSystemTheme() : initialTheme;
+  const initialResolved = initialTheme === 'system' ? resolveScheduledTheme() : initialTheme;
 
   return {
     theme: initialTheme,
@@ -50,26 +65,11 @@ export const useThemeStore = create<ThemeState>((set, get) => {
     initTheme: () => {
       if (typeof window === 'undefined') return;
       const stored = getStoredTheme();
-      const resolved = stored === 'system' ? resolveSystemTheme() : stored;
+      const resolved = stored === 'system' ? resolveScheduledTheme() : stored;
 
       applyHtmlClass(resolved);
       set({ theme: stored, resolvedTheme: resolved });
-
-      // Listen for system theme changes if mode is 'system'
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const listener = (e: MediaQueryListEvent) => {
-        if (get().theme === 'system') {
-          const newResolved = e.matches ? 'dark' : 'light';
-          applyHtmlClass(newResolved);
-          set({ resolvedTheme: newResolved });
-        }
-      };
-
-      try {
-        mediaQuery.addEventListener('change', listener);
-      } catch (e) {
-        mediaQuery.addListener(listener);
-      }
+      startScheduleWatcher();
     },
 
     setTheme: (newTheme: ThemeMode) => {
@@ -80,9 +80,10 @@ export const useThemeStore = create<ThemeState>((set, get) => {
         console.error('Error saving theme to localStorage', e);
       }
 
-      const resolved = newTheme === 'system' ? resolveSystemTheme() : newTheme;
+      const resolved = newTheme === 'system' ? resolveScheduledTheme() : newTheme;
       applyHtmlClass(resolved);
       set({ theme: newTheme, resolvedTheme: resolved });
+      startScheduleWatcher();
     },
 
     toggleTheme: () => {

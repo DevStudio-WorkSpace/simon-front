@@ -26,8 +26,9 @@ export default function RootLayout({
               (function() {
                 try {
                   var stored = localStorage.getItem('simon-theme');
-                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (stored === 'dark' || (!stored && prefersDark) || (stored === 'system' && prefersDark)) {
+                  var hour = new Date().getHours();
+                  var scheduledDark = hour >= 18 || hour < 6;
+                  if (stored === 'dark' || (stored !== 'light' && scheduledDark)) {
                     document.documentElement.classList.add('dark');
                   } else {
                     document.documentElement.classList.remove('dark');
@@ -38,7 +39,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100">
+      <body className="antialiased min-h-screen bg-white dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100">
         {children}
       </body>
     </html>

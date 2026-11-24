@@ -7,6 +7,7 @@ import { useScreenPlayerStore } from '../../application/store/screenPlayerStore'
 import { useThemeStore } from '../../application/store/themeStore';
 import { useAuthStore } from '../../application/store/authStore';
 import { AdminLogin } from '../../presentation/components/admin/AdminLogin';
+import { Badge, BadgeVariant } from '../../presentation/components/ui/Badge';
 import { 
   Tv, 
   Play, 
@@ -34,6 +35,22 @@ import {
   Sparkles,
   GripVertical
 } from 'lucide-react';
+
+const tickerVariantMap: Record<string, BadgeVariant> = {
+  urgente: 'urgent',
+  alerta: 'alert',
+  anuncio: 'scheduled',
+  por_mejorar: 'waiting',
+  logro: 'success',
+};
+
+const tickerLabelMap: Record<string, string> = {
+  urgente: 'Urgente',
+  alerta: 'Alerta',
+  anuncio: 'Anuncio',
+  por_mejorar: 'Por mejorar',
+  logro: 'Logro',
+};
 
 export default function AdminPage() {
   const { isAuthenticated, user, logout, checkAuth } = useAuthStore();
@@ -79,7 +96,6 @@ export default function AdminPage() {
     setIsAuthChecked(true);
   }, [checkAuth, initTheme]);
 
-  // Set initial global time input once on mount from stored views
   useEffect(() => {
     if (viewsConfig && viewsConfig.length > 0) {
       const active = viewsConfig.filter((v) => v.active).sort((a, b) => a.order - b.order);
@@ -91,18 +107,16 @@ export default function AdminPage() {
   // Prevent flash while checking localStorage session
   if (!isAuthChecked) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-[#0A0C10] text-slate-400">
-        <div className="w-8 h-8 border-2 border-[#E6007E] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen w-full flex items-center justify-center bg-white dark:bg-[#0B0F19] text-slate-500 dark:text-slate-400">
+        <div className="w-8 h-8 border-2 border-[#e6007e] dark:border-[#ff2d95] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  // If not authenticated, guard route and display animated login
   if (!isAuthenticated) {
     return <AdminLogin />;
   }
 
-  // Simulated Bitácora for activity demo
   const sampleLogbook = [
     { time: '09:10', author: 'Billy', action: 'Inicio', note: 'Inicia "Completar maletín 2". Resultado esperado: inventario completo.' },
     { time: '10:20', author: 'Billy', action: 'Pausa por servicio', note: 'Surge servicio urgente #0152. Inventario terminado; faltan dos puntas. Próximo paso: reponer puntas.' },
@@ -111,24 +125,22 @@ export default function AdminPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 p-4 md:p-8">
+    <div className="min-h-screen bg-white dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
-        {/* Floating Notification */}
         {notification && (
-          <div className="fixed top-5 right-5 z-50 flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xl border border-slate-700 animate-in fade-in slide-in-from-top-4">
+          <div role="status" className="toast-enter fixed bottom-4 right-4 sm:bottom-auto sm:top-6 z-50 flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xl border border-slate-200 dark:border-slate-700">
             <CheckCircle2 className="w-5 h-5 text-emerald-400 dark:text-emerald-600 shrink-0" />
             <span className="text-sm font-bold">{notification}</span>
           </div>
         )}
 
-        {/* Admin Header */}
-        <header className="glass-panel neumorph-shadow rounded-2xl p-6 flex flex-wrap items-center justify-between gap-4 border border-slate-200 dark:border-slate-800">
+        <header className="glass-panel neumorph-shadow rounded-2xl p-6 flex flex-wrap items-center justify-between gap-4 border border-slate-200 dark:border-slate-800 border-l-4 border-l-[#e6007e]">
           <div className="flex items-center gap-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/logo-goservice.png"
               alt="GO Service LATAM"
-              className="w-12 h-12 rounded-full object-contain shadow-md"
+              className="w-14 h-14 rounded-full object-contain shadow-md"
             />
             <div>
               <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
@@ -141,12 +153,12 @@ export default function AdminPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* User Info Badge */}
             {user && (
               <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span className="w-2 h-2 rounded-full bg-emerald-500" aria-hidden="true" />
                 <span className="text-slate-800 dark:text-slate-200 font-bold">{user.email}</span>
-                <span className="text-slate-400 capitalize">({user.role})</span>
+                <span className="text-slate-500 dark:text-slate-400 capitalize">({user.role})</span>
+                <span className="semantic-text--success font-bold">Activo</span>
               </div>
             )}
 
@@ -154,6 +166,7 @@ export default function AdminPage() {
               onClick={toggleTheme}
               className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Cambiar tema"
+              aria-label="Cambiar tema"
             >
               {resolvedTheme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
@@ -161,13 +174,12 @@ export default function AdminPage() {
             <Link
               href="/pantalla/TV-SALA-01"
               target="_blank"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#E6007E] hover:bg-[#C9006E] text-white font-bold text-sm shadow-md transition-all active:scale-95"
+              className="admin-primary-button flex items-center gap-2"
             >
               <Tv className="w-4 h-4" />
               <span>Abrir TV en vivo</span>
             </Link>
 
-            {/* Logout button */}
             <button
               type="button"
               onClick={() => logout()}
@@ -180,13 +192,14 @@ export default function AdminPage() {
           </div>
         </header>
 
-        {/* Tab Navigation */}
-        <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto">
+        <div role="tablist" aria-label="Secciones del panel" className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto">
           <button
             onClick={() => setActiveTab('control')}
+            role="tab"
+            aria-selected={activeTab === 'control'}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-colors ${
               activeTab === 'control'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900'
+                ? 'bg-[#e6007e] text-white shadow-md'
                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
@@ -195,9 +208,11 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setActiveTab('actividades')}
+            role="tab"
+            aria-selected={activeTab === 'actividades'}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-colors ${
               activeTab === 'actividades'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900'
+                ? 'bg-[#e6007e] text-white shadow-md'
                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
@@ -206,9 +221,11 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setActiveTab('anuncios')}
+            role="tab"
+            aria-selected={activeTab === 'anuncios'}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-colors ${
               activeTab === 'anuncios'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900'
+                ? 'bg-[#e6007e] text-white shadow-md'
                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
@@ -217,9 +234,11 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setActiveTab('meta')}
+            role="tab"
+            aria-selected={activeTab === 'meta'}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-colors ${
               activeTab === 'meta'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900'
+                ? 'bg-[#e6007e] text-white shadow-md'
                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
@@ -228,9 +247,11 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setActiveTab('marquesina')}
+            role="tab"
+            aria-selected={activeTab === 'marquesina'}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-colors ${
               activeTab === 'marquesina'
-                ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900'
+                ? 'bg-[#e6007e] text-white shadow-md'
                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
@@ -239,12 +260,9 @@ export default function AdminPage() {
           </button>
         </div>
 
-        {/* Tab Content: Control de Pantalla */}
         {activeTab === 'control' && (
           <div className="space-y-6">
-            {/* Top grid: TV Status & Remote */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* TV State card */}
               <div className="glass-panel neumorph-shadow rounded-2xl p-6 border border-slate-200 dark:border-slate-800 space-y-4">
                 <h2 className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
                   <Tv className="w-5 h-5 text-[#E6007E]" />
@@ -253,20 +271,20 @@ export default function AdminPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800/60">
-                    <span className="text-xs text-slate-500 uppercase font-bold">Vista Actual</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold">Vista Actual</span>
                     <p className="text-2xl font-black text-slate-900 dark:text-white mt-1">
                       {currentSlide} de {totalSlides}
                     </p>
-                    <span className="text-xs text-slate-500 font-semibold block truncate">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold block truncate">
                       {currentView?.title || 'Rotando'}
                     </span>
                   </div>
                   <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800/60">
-                    <span className="text-xs text-slate-500 uppercase font-bold">Modo</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold">Modo</span>
                     <p className={`text-2xl font-black mt-1 ${isPaused ? 'text-amber-600' : 'text-emerald-600'}`}>
                       {isPaused ? 'Pausado' : 'Reproduciendo'}
                     </p>
-                    <span className="text-xs text-slate-500 font-semibold block">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold block">
                       {activeViews.length} vistas activas
                     </span>
                   </div>
@@ -287,7 +305,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Direct Remote Controls */}
               <div className="glass-panel neumorph-shadow rounded-2xl p-6 border border-slate-200 dark:border-slate-800 space-y-6">
                 <h2 className="text-xl font-black text-slate-900 dark:text-white">
                   Comandos de Control Remoto
@@ -296,8 +313,9 @@ export default function AdminPage() {
                 <div className="flex items-center justify-center gap-4 py-4">
                   <button
                     onClick={prevSlide}
-                    className="p-4 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-100 font-bold shadow transition-all active:scale-95"
+                    className="p-4 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold shadow transition-all active:scale-95"
                     title="Anterior"
+                    aria-label="Vista anterior"
                   >
                     <ChevronLeft className="w-8 h-8" />
                   </button>
@@ -305,24 +323,26 @@ export default function AdminPage() {
                   <button
                     onClick={togglePause}
                     className={`p-6 rounded-full text-white font-bold shadow-xl transition-all active:scale-95 ${
-                      isPaused ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[#E6007E] hover:bg-[#C9006E]'
+                      isPaused ? 'bg-amber-500 hover:bg-amber-600' : 'bg-[#E6007E] hover:bg-[#C9006E]'
                     }`}
                     title={isPaused ? 'Reanudar' : 'Pausar'}
+                    aria-label={isPaused ? 'Reanudar transmisión' : 'Pausar transmisión'}
                   >
                     {isPaused ? <Play className="w-8 h-8 fill-current" /> : <Pause className="w-8 h-8 fill-current" />}
                   </button>
 
                   <button
                     onClick={nextSlide}
-                    className="p-4 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-100 font-bold shadow transition-all active:scale-95"
+                    className="p-4 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold shadow transition-all active:scale-95"
                     title="Siguiente"
+                    aria-label="Vista siguiente"
                   >
                     <ChevronRight className="w-8 h-8" />
                   </button>
                 </div>
 
                 <div>
-                  <span className="text-xs text-slate-500 uppercase font-bold block mb-2">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 uppercase font-bold block mb-2">
                     Saltar directamente a diapositiva activa:
                   </span>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -345,7 +365,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* View Order & Rotation Timing Manager */}
             <div className="glass-panel neumorph-shadow rounded-2xl p-6 border border-slate-200 dark:border-slate-800 space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
                 <div>
@@ -360,7 +379,6 @@ export default function AdminPage() {
                   </p>
                 </div>
 
-                {/* Default Reset Button */}
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => {
@@ -378,7 +396,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Global Duration Setter & Cycle Summary */}
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-2.5">
                   <Clock className="w-5 h-5 text-[#E6007E]" />
@@ -386,7 +403,7 @@ export default function AdminPage() {
                     <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 block">
                       Aplicar duración uniforme a todas las vistas
                     </span>
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-slate-500 dark:text-slate-400">
                       Ciclo total actual: {totalCycleSeconds}s (aprox. {(totalCycleSeconds / 60).toFixed(1)} min) en {activeViews.length} vistas activas
                     </span>
                   </div>
@@ -414,7 +431,7 @@ export default function AdminPage() {
                     }}
                     className="w-20 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold text-center"
                   />
-                  <span className="text-xs font-semibold text-slate-500">segundos</span>
+                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">segundos</span>
                   <button
                     onClick={() => {
                       const finalSecs = Math.max(3, globalTimeInput || 3);
@@ -423,14 +440,13 @@ export default function AdminPage() {
                       setNotification(`Se actualizaron todas las vistas a ${finalSecs} segundos`);
                       setTimeout(() => setNotification(null), 3500);
                     }}
-                    className="px-4 py-1.5 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs hover:opacity-90 transition-all active:scale-95"
+                    className="px-4 py-2 rounded-lg bg-[#E6007E] hover:bg-[#C9006E] text-white font-bold text-xs shadow-sm transition-all active:scale-95"
                   >
                     Aplicar a todas
                   </button>
                 </div>
               </div>
 
-              {/* View Configuration List with Drag and Drop */}
               <div className="space-y-3">
                 {sortedViews.map((view, index) => {
                   const isFirst = index === 0;
@@ -486,17 +502,14 @@ export default function AdminPage() {
                           : 'bg-slate-100/50 dark:bg-slate-900/20 border-dashed border-slate-300 dark:border-slate-800 opacity-60'
                       }`}
                     >
-                      {/* Drag Handle, Order arrows & Info */}
                       <div className="flex items-center gap-3">
-                        {/* Drag Handle */}
                         <div
-                          className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                          className="p-1 rounded text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
                           title="Arrastrar para reordenar"
                         >
                           <GripVertical className="w-5 h-5" />
                         </div>
 
-                        {/* Order buttons (accessible alternative) */}
                         <div className="flex flex-col gap-0.5">
                           <button
                             disabled={isFirst}
@@ -504,13 +517,13 @@ export default function AdminPage() {
                               e.stopPropagation();
                               moveViewOrder(view.id, 'up');
                             }}
-                            className={`p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors ${
-                              isFirst ? 'opacity-20 cursor-not-allowed' : 'text-slate-700 dark:text-slate-300'
+                            className={`p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors ${
+                              isFirst ? 'opacity-40 cursor-not-allowed' : 'text-slate-700 dark:text-slate-300'
                             }`}
                             title="Subir de posición en el orden"
                             aria-label={`Subir ${view.title}`}
                           >
-                            <ArrowUp className="w-3.5 h-3.5" />
+                            <ArrowUp className="w-4 h-4" />
                           </button>
                           <button
                             disabled={isLast}
@@ -518,13 +531,13 @@ export default function AdminPage() {
                               e.stopPropagation();
                               moveViewOrder(view.id, 'down');
                             }}
-                            className={`p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors ${
-                              isLast ? 'opacity-20 cursor-not-allowed' : 'text-slate-700 dark:text-slate-300'
+                            className={`p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors ${
+                              isLast ? 'opacity-40 cursor-not-allowed' : 'text-slate-700 dark:text-slate-300'
                             }`}
                             title="Bajar de posición en el orden"
                             aria-label={`Bajar ${view.title}`}
                           >
-                            <ArrowDown className="w-3.5 h-3.5" />
+                            <ArrowDown className="w-4 h-4" />
                           </button>
                         </div>
 
@@ -538,24 +551,22 @@ export default function AdminPage() {
                               {view.title}
                             </span>
                             {isActiveNow && (
-                              <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#E6007E] text-white">
+                              <span className="px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-black uppercase tracking-wider bg-[#E6007E] text-white">
                                 En Pantalla TV
                               </span>
                             )}
                           </div>
-                          <span className="text-xs text-slate-400 font-mono">tipo: {view.tipo}</span>
+                          <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">tipo: {view.tipo}</span>
                         </div>
                       </div>
 
-                      {/* Controls: Active toggle & Jump */}
                       <div className="flex items-center gap-3 sm:gap-4 self-end sm:self-center" onClick={(e) => e.stopPropagation()}>
-                        {/* Active Toggle Switch */}
                         <button
                           onClick={() => toggleViewActive(view.id)}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                             view.active
                               ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
-                              : 'bg-slate-200 dark:bg-slate-800 text-slate-500 border border-slate-300 dark:border-slate-700'
+                              : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700'
                           }`}
                           title={view.active ? 'Haga clic para ocultar de la rotación' : 'Haga clic para activar en la rotación'}
                         >
@@ -563,11 +574,11 @@ export default function AdminPage() {
                           <span>{view.active ? 'Activa' : 'Oculta'}</span>
                         </button>
 
-                        {/* Jump button */}
                         <button
                           onClick={() => goToViewId(view.id)}
                           className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                           title="Mostrar esta vista de inmediato en la TV"
+                          aria-label={`Mostrar ${view.title} en la TV`}
                         >
                           <ArrowRight className="w-4 h-4" />
                         </button>
@@ -580,7 +591,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* Tab Content: Actividades & Bitácora */}
         {activeTab === 'actividades' && (
           <div className="space-y-6">
             <div className="glass-panel neumorph-shadow rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
@@ -600,7 +610,7 @@ export default function AdminPage() {
                     className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="font-mono text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
+                      <span className="font-mono text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
                         {log.time}
                       </span>
                       <span className="font-bold text-sm text-slate-800 dark:text-slate-200">
@@ -620,7 +630,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* Tab Content: Anuncios */}
         {activeTab === 'anuncios' && (
           <div className="glass-panel neumorph-shadow rounded-2xl p-6 border border-slate-200 dark:border-slate-800 space-y-4">
             <h2 className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
@@ -632,19 +641,19 @@ export default function AdminPage() {
             </p>
             <div className="space-y-4 max-w-xl">
               <div>
-                <label className="text-xs uppercase font-bold text-slate-500 block mb-1">Título</label>
+                <label className="text-xs uppercase font-bold text-slate-600 dark:text-slate-300 block mb-1">Título</label>
                 <input
                   type="text"
                   defaultValue={data?.announcement.title || 'Capacitación en Mantenimiento UV'}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm font-semibold"
+                  className="admin-input"
                 />
               </div>
               <div>
-                <label className="text-xs uppercase font-bold text-slate-500 block mb-1">Mensaje</label>
+                <label className="text-xs uppercase font-bold text-slate-600 dark:text-slate-300 block mb-1">Mensaje</label>
                 <textarea
                   rows={4}
                   defaultValue={data?.announcement.description || 'Se realizará este viernes a las 15:00 en la sala principal.'}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm font-semibold"
+                  className="admin-input"
                 />
               </div>
               <button
@@ -652,7 +661,7 @@ export default function AdminPage() {
                   setNotification('Anuncio actualizado para la pantalla de sala');
                   setTimeout(() => setNotification(null), 3000);
                 }}
-                className="px-6 py-2.5 rounded-xl bg-[#E6007E] hover:bg-[#C9006E] text-white font-bold text-sm shadow transition-all active:scale-95"
+                className="admin-primary-button"
               >
                 Actualizar Anuncio
               </button>
@@ -660,7 +669,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* Tab Content: Meta Comercial */}
         {activeTab === 'meta' && (
           <div className="glass-panel neumorph-shadow rounded-2xl p-6 border border-slate-200 dark:border-slate-800 space-y-4">
             <h2 className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
@@ -668,11 +676,11 @@ export default function AdminPage() {
               <span>Progreso de Meta Comercial del Mes</span>
             </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Modificá el porcentaje de avance general. Por política ética de SIMON, no se visualizan importes en soles en la pantalla pública.
+              Modificá el porcentaje de avance general. Por política ética de SIMON, la TV muestra solo el avance, sin importes monetarios.
             </p>
             <div className="space-y-4 max-w-md">
               <div>
-                <label className="text-xs uppercase font-bold text-slate-500 block mb-1">
+                <label className="text-xs uppercase font-bold text-slate-600 dark:text-slate-300 block mb-1">
                   Porcentaje alcanzado (%)
                 </label>
                 <input
@@ -680,7 +688,7 @@ export default function AdminPage() {
                   defaultValue={data?.goal.progressPercentage || 74}
                   min={0}
                   max={100}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm font-bold font-mono"
+                  className="admin-input font-mono"
                 />
               </div>
               <button
@@ -688,7 +696,7 @@ export default function AdminPage() {
                   setNotification('Meta mensual actualizada');
                   setTimeout(() => setNotification(null), 3000);
                 }}
-                className="px-6 py-2.5 rounded-xl bg-[#E6007E] hover:bg-[#C9006E] text-white font-bold text-sm shadow transition-all active:scale-95"
+                className="admin-primary-button"
               >
                 Guardar Porcentaje
               </button>
@@ -696,7 +704,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* Tab Content: Marquesina */}
         {activeTab === 'marquesina' && (
           <div className="glass-panel neumorph-shadow rounded-2xl p-6 border border-slate-200 dark:border-slate-800 space-y-4">
             <h2 className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
@@ -713,14 +720,14 @@ export default function AdminPage() {
                   className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 flex items-center justify-between gap-4"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded bg-[#E6007E]/10 text-[#E6007E]">
-                      {item.type}
-                    </span>
+                    <Badge variant={tickerVariantMap[item.type] || 'neutral'} size="xs">
+                      {tickerLabelMap[item.type] || item.type}
+                    </Badge>
                     <span className="text-sm font-medium text-slate-800 dark:text-slate-200">
                       {item.text}
                     </span>
                   </div>
-                  <span className="text-xs font-mono text-slate-400">
+                  <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
                     Cinta activa
                   </span>
                 </div>
