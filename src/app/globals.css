@@ -3,24 +3,31 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --urgente: #dc2626;
+  --alerta: #fb7185;
+  --programado: #2563eb;
+  --espera: #f59e0b;
+  --logro: #16a34a;
+  --sin-tecnico: #7c3aed;
+  --neutro: #6b7280;
+  --magenta: #d6006f;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-urgente: var(--urgente);
+  --color-alerta: var(--alerta);
+  --color-programado: var(--programado);
+  --color-espera: var(--espera);
+  --color-logro: var(--logro);
+  --color-sin-tecnico: var(--sin-tecnico);
+  --color-neutro: var(--neutro);
+  --color-magenta: var(--magenta);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, "Helvetica Neue", sans-serif;
 }
