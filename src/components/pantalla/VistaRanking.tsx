@@ -1,13 +1,13 @@
 import type { PersonaRanking } from "@/types/pantalla";
 
 const insignias = ["Oro", "Plata", "Bronce"];
-const colores = ["bg-yellow-400", "bg-gray-300", "bg-orange-400"];
+const colores = ["bg-[#f59e0b]", "bg-gray-300", "bg-[#cd7f32]"];
 
 export function VistaRanking({ personas }: { personas: PersonaRanking[] }) {
   return (
     <div className="grid grid-cols-3 gap-6">
       {personas.slice(0, 3).map((persona, indice) => (
-        <article key={persona.nombre} className="rounded-2xl border-2 border-gray-200 p-6">
+        <article key={persona.nombre} className="border-t-8 bg-white px-2 pt-6" style={{ borderTopColor: indice === 0 ? "#d6006f" : indice === 1 ? "#9ca3af" : "#cd7f32" }}>
           <div className="flex items-center gap-4">
             <span className={`flex h-20 w-20 items-center justify-center rounded-full text-[28px] font-bold ${colores[indice]}`}>
               {persona.puesto}

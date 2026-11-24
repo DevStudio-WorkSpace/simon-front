@@ -1,5 +1,13 @@
 # Entrega frontend
 
+## Diseño basado en requisitos
+
+- Estado: actualizado
+- Rama: `feature/SIMON-S1-design-requisitos`
+- Archivos principales: cabecera, franja de mensajes y las seis vistas en `src/components/pantalla/`.
+- Diseño tomado de: `requirements/SIMON_propuesta-vistas.md` y `requirements/images/`.
+- Pendiente: validar a 1920×1080 y 3–4 metros en el TV físico.
+
 ## SIMON-S1-T01
 
 - Estado: terminado

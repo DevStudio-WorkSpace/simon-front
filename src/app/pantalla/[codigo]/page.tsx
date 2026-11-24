@@ -151,22 +151,22 @@ export default function Pantalla({ params }: { params: Promise<{ codigo: string 
   }
 
   return (
-    <main className="mx-auto h-screen max-h-[1080px] w-full max-w-[1920px] overflow-hidden bg-white text-[28px]">
+    <main className="mx-auto h-screen min-h-[1080px] w-screen max-w-[1920px] overflow-hidden bg-white text-[28px]">
       {sinConexion && (
         <div role="alert" className="absolute left-1/2 top-32 z-10 -translate-x-1/2 rounded-lg bg-amber-100 px-8 py-5 text-amber-900">
           Sin conexión. Último dato recibido: {horaUltimoDato || "no disponible"}
         </div>
       )}
       <CabeceraPantalla estado={estado} fecha_hora={fechaHora} titulo={titulo} />
-      <div className="h-3 bg-gray-100">
+      <div className="h-[6px] bg-gray-100">
         <div
           className="h-full bg-[var(--magenta)]"
           style={{ width: `${(estado.vista_actual / 6) * 100}%` }}
         />
       </div>
-      <section className="h-[790px] border-b-2 border-gray-100 px-10 py-8">
+      <section className="h-[868px] border-b-2 border-gray-100 px-[34px] py-[24px]">
         {estado.vista_actual === 1 && (
-          <VistaServicios servicios={estado.servicios} pagina={1} />
+          <VistaServicios servicios={estado.servicios} pagina={1} indicadores={estado.indicadores_servicios} />
         )}
         {estado.vista_actual === 2 && (
           <VistaPuntualidad puntualidad={estado.puntualidad} />

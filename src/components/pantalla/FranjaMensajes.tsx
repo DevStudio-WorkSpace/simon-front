@@ -15,7 +15,7 @@ export function FranjaMensajes({ mensajes }: { mensajes: MensajeMarquesina[] }) 
   });
 
   return (
-    <footer className="flex h-[150px] items-center gap-4 overflow-hidden border-t-2 border-gray-200 bg-white px-10">
+    <footer className="flex h-[82px] items-center gap-5 overflow-hidden border-t border-gray-200 bg-white px-[34px]">
       {ordenados.map((mensaje) => (
         <div
           key={`${mensaje.tipo}-${mensaje.texto}`}

@@ -9,6 +9,7 @@ export function accionPorTecla(key: string, keyCode: number): AccionPantalla | n
   if (key === "Enter" || key === " " || keyCode === 23) return "pausa";
   if (key === "PageDown") return "siguiente";
   if (key === "PageUp") return "anterior";
+  if (key === "b" || key === "B" || key === "." || key === "Decimal") return "siguiente";
   return null;
 }
 

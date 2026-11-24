@@ -10,15 +10,14 @@ export function claseHito(porcentaje: number) {
 
 export function VistaMeta({ meta }: { meta: MetaMes }) {
   return (
-    <div className="mx-auto max-w-[1500px] text-center">
-      <strong className="block text-[80px] text-[var(--magenta)]">{meta.porcentaje}%</strong>
-      <p className="mt-2 text-[28px]">
+    <div className="mx-auto max-w-[1550px] text-center">
+      <h2 className="text-[38px] font-bold text-[#26324d]">Meta comercial de noviembre</h2>
+      <strong className="mt-5 block text-[130px] leading-none text-[#26324d]">{meta.porcentaje}%</strong>
+      <div className="mt-5 rounded-lg bg-green-50 px-6 py-3 text-[24px] text-green-700">
         Hito alcanzado: <strong>{meta.hito_alcanzado}</strong>
-      </p>
-      <p className="mt-2 text-[28px]">
-        Próximo hito: <strong>{meta.proximo_hito}</strong>
-      </p>
-      <div className="relative mt-16 h-14 rounded-full bg-gray-200">
+      </div>
+      <p className="mt-4 text-[34px] text-[#69758a]">Próximo hito: <strong>{meta.proximo_hito}</strong></p>
+      <div className="relative mt-14 h-10 rounded-full bg-gray-200">
         <div
           className="h-full rounded-full bg-[var(--magenta)]"
           style={{ width: `${Math.min(100, meta.porcentaje)}%` }}
@@ -29,7 +28,7 @@ export function VistaMeta({ meta }: { meta: MetaMes }) {
             className="absolute top-0 h-20 border-l-4 border-gray-700"
             style={{ left: `${marca}%` }}
           >
-            <span className="absolute left-1 top-16 whitespace-nowrap">{marca}%</span>
+            <span className="absolute left-1 top-14 whitespace-nowrap">{marca}%</span>
           </span>
         ))}
       </div>
