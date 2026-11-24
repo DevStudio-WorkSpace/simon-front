@@ -27,3 +27,12 @@
 - Diferencias con el diseño: el contenido central continúa pendiente hasta T12-T14.
 - Preguntas abiertas: hora real del último dato depende del campo confirmado por el backend.
 
+## SIMON-S1-T12
+
+- Estado: terminado
+- Commits: `5828c9b` implementación; `33b8326` pruebas
+- Archivos principales: `src/components/pantalla/VistaServicios.tsx`, `src/components/pantalla/VistaPuntualidad.tsx`
+- Verificación: `npm run lint`, `npx tsc --noEmit`, `npm test`, `npm run build`
+- Diferencias con el diseño: la paginación cambia cada 9 registros y conserva tipografía.
+- Preguntas abiertas: confirmar nombres y campos finales del modelo de puntualidad.
+
