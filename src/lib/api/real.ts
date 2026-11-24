@@ -50,4 +50,14 @@ export const realApi: PantallaApi = {
       void supabase.removeChannel(canal);
     };
   },
+  async actualizarEstado(codigo: string, cambios: Partial<EstadoPantalla>) {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    if (!url) throw new Error("NEXT_PUBLIC_API_URL no está configurado");
+    const respuesta = await fetch(`${url}/pantallas/${codigo}/estado`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cambios),
+    });
+    if (!respuesta.ok) throw new Error("No se pudo actualizar la pantalla");
+  },
 };

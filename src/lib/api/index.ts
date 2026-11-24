@@ -8,6 +8,7 @@ export interface PantallaApi {
   obtenerEstado(codigo: string): Promise<EstadoPantalla>;
   enviarOrden(codigo: string, accion: AccionPantalla, vista?: number): Promise<void>;
   suscribirse(codigo: string, callback: (estado: EstadoPantalla) => void): () => void;
+  actualizarEstado(codigo: string, cambios: Partial<EstadoPantalla>): Promise<void>;
 }
 
 export const pantallaApi: PantallaApi =

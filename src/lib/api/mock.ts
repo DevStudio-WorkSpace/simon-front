@@ -4,6 +4,15 @@ import type { AccionPantalla, PantallaApi } from "./index";
 
 const estado: EstadoPantalla = structuredClone(mockData) as EstadoPantalla;
 const suscriptores = new Set<(estado: EstadoPantalla) => void>();
+const canal =
+  typeof BroadcastChannel !== "undefined"
+    ? new BroadcastChannel("simon-pantalla-estado")
+    : null;
+
+canal?.addEventListener("message", (evento: MessageEvent<EstadoPantalla>) => {
+  Object.assign(estado, structuredClone(evento.data));
+  for (const callback of suscriptores) callback(structuredClone(estado));
+});
 
 function esperar(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -11,6 +20,7 @@ function esperar(ms: number) {
 
 function publicar() {
   for (const callback of suscriptores) callback(structuredClone(estado));
+  canal?.postMessage(structuredClone(estado));
 }
 
 export const mockApi: PantallaApi = {
@@ -42,5 +52,11 @@ export const mockApi: PantallaApi = {
     suscriptores.add(callback);
     void this.obtenerEstado(codigo).then(callback);
     return () => suscriptores.delete(callback);
+  },
+  async actualizarEstado(codigo: string, cambios: Partial<EstadoPantalla>) {
+    if (codigo !== estado.codigo) return;
+    Object.assign(estado, cambios);
+    estado.ultima_actualizacion = new Date().toISOString();
+    publicar();
   },
 };
