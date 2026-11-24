@@ -7,6 +7,8 @@ import { VistaServicios } from "@/components/pantalla/VistaServicios";
 import { VistaPuntualidad } from "@/components/pantalla/VistaPuntualidad";
 import { VistaRanking } from "@/components/pantalla/VistaRanking";
 import { VistaMeta } from "@/components/pantalla/VistaMeta";
+import { VistaAnuncios } from "@/components/pantalla/VistaAnuncios";
+import { VistaActividades } from "@/components/pantalla/VistaActividades";
 import { useTecladoPantalla } from "@/components/pantalla/TecladoPantalla";
 import { pantallaApi } from "@/lib/api";
 import type { AccionPantalla } from "@/lib/api";
@@ -109,7 +111,11 @@ export default function Pantalla({ params }: { params: Promise<{ codigo: string 
         ? "Ranking del mes"
         : estado?.vista_actual === 4
           ? "Meta del mes"
-          : `Vista ${estado?.vista_actual}/6`;
+          : estado?.vista_actual === 5
+            ? "Anuncio de hoy"
+            : estado?.vista_actual === 6
+              ? "Actividades internas"
+              : `Vista ${estado?.vista_actual}/6`;
 
   if (!estado) {
     return (
@@ -147,7 +153,13 @@ export default function Pantalla({ params }: { params: Promise<{ codigo: string 
         {estado.vista_actual === 4 && (
           <VistaMeta meta={estado.meta_mes} />
         )}
-        {estado.vista_actual > 4 && (
+        {estado.vista_actual === 5 && (
+          <VistaAnuncios anuncios={estado.anuncios} segundos={estado.segundos_rotacion || 10} />
+        )}
+        {estado.vista_actual === 6 && (
+          <VistaActividades actividades={estado.actividades} disponible={estado.actividad_disponible} />
+        )}
+        {estado.vista_actual > 6 && (
           <h2 className="text-[80px] font-bold text-[var(--magenta)]">
             Vista {estado.vista_actual}/6
           </h2>
