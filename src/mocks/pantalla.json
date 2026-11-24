@@ -1,0 +1,76 @@
+{
+  "codigo": "sala",
+  "vista_actual": 1,
+  "reproduciendo": true,
+  "segundos_rotacion": 10,
+  "ultima_actualizacion": "2026-11-23T19:06:00.701-05:00",
+  "indicadores_servicios": {
+    "servicios_hoy": 9,
+    "urgentes": 2,
+    "atendiendo_ahora": 2,
+    "sin_tecnico": 2,
+    "por_llamar": 1
+  },
+  "servicios": [
+    {"numero":"U-01","prioridad":"Urgente","hora":"08:30","tecnico":"Ana López","cliente":"Acme Norte","modalidad":"visita","servicio":"Red de servidores","maquina":"SRV-101","estado":"En atención"},
+    {"numero":"U-02","prioridad":"Urgente","hora":"09:15","tecnico":"Sin técnico","cliente":"Comercial Sur","modalidad":"remoto","servicio":"Facturación","maquina":"POS-20","estado":"Por programar"},
+    {"numero":"03","prioridad":"Normal","hora":"09:30","tecnico":"Carlos Ruiz","cliente":"Andes SAC","modalidad":"taller","servicio":"Mantenimiento","maquina":"NB-442","estado":"En espera","motivo_espera":"Repuesto"},
+    {"numero":"04","prioridad":"Normal","hora":"10:00","tecnico":"María Paz","cliente":"Delta Corp","modalidad":"visita","servicio":"Impresoras","maquina":"IMP-08","estado":"Programado"},
+    {"numero":"05","prioridad":"Normal","hora":"11:00","tecnico":"José Vega","cliente":"Hotel Central","modalidad":"remoto","servicio":"VPN","maquina":"RTR-04","estado":"En atención"},
+    {"numero":"06","prioridad":"Normal","hora":"12:00","tecnico":"Sin técnico","cliente":"Granja Lima","modalidad":"taller","servicio":"Backup","maquina":"NAS-02","estado":"Por programar"},
+    {"numero":"07","prioridad":"Normal","hora":"13:30","tecnico":"Ana López","cliente":"Grupo Norte","modalidad":"visita","servicio":"Cableado","maquina":"SW-12","estado":"Atendido"},
+    {"numero":"08","prioridad":"Normal","hora":"14:00","tecnico":"Carlos Ruiz","cliente":"Mercado Uno","modalidad":"remoto","servicio":"Correo","maquina":"MX-01","estado":"Programado"},
+    {"numero":"09","prioridad":"Normal","hora":"15:30","tecnico":"María Paz","cliente":"Clínica Sol","modalidad":"taller","servicio":"Diagnóstico","maquina":"PC-77","estado":"Atendido"}
+  ],
+  "puntualidad": {
+    "a_tiempo_hoy": 8,
+    "total_hoy": 10,
+    "tardanzas_hoy": 25,
+    "faltas_hoy": 1,
+    "personas": [
+      {"nombre":"Ana López","hora_llegada":"08:01","llegada_tarde":false,"minutos_tarde":0},
+      {"nombre":"Luis Mora","hora_llegada":"08:03","llegada_tarde":false,"minutos_tarde":0},
+      {"nombre":"María Paz","hora_llegada":"08:05","llegada_tarde":false,"minutos_tarde":0},
+      {"nombre":"Carlos Ruiz","hora_llegada":"08:06","llegada_tarde":false,"minutos_tarde":0},
+      {"nombre":"José Vega","hora_llegada":"08:07","llegada_tarde":false,"minutos_tarde":0},
+      {"nombre":"Elena Díaz","hora_llegada":"08:08","llegada_tarde":false,"minutos_tarde":0},
+      {"nombre":"Pablo Ríos","hora_llegada":"08:09","llegada_tarde":false,"minutos_tarde":0},
+      {"nombre":"Sara Cruz","hora_llegada":"08:10","llegada_tarde":false,"minutos_tarde":0},
+      {"nombre":"Persona tarde uno","hora_llegada":"08:20","llegada_tarde":true,"minutos_tarde":12},
+      {"nombre":"Persona tarde dos","hora_llegada":"08:25","llegada_tarde":true,"minutos_tarde":13}
+    ],
+    "ultimas_semanas":[
+      {"etiqueta":"Hace 3 semanas","minutos":42,"actual":false},
+      {"etiqueta":"Hace 2 semanas","minutos":31,"actual":false},
+      {"etiqueta":"Semana actual","minutos":25,"actual":true}
+    ],
+    "racha_puntualidad": 6,
+    "meta_siguiente_dia":"Llegar antes de las 08:00",
+    "horario_meta":"08:00"
+  },
+  "ranking":[
+    {"puesto":1,"nombre":"Ana López","total":96,"puntualidad":24,"asistencia":24,"capacitacion":23,"servicios":25,"mas_pesa":"Actitud","crecio":true},
+    {"puesto":2,"nombre":"Luis Mora","total":91,"puntualidad":22,"asistencia":23,"capacitacion":22,"servicios":24,"mas_pesa":"Aptitud","crecio":true},
+    {"puesto":3,"nombre":"María Paz","total":88,"puntualidad":21,"asistencia":22,"capacitacion":21,"servicios":24,"mas_pesa":"Actitud","crecio":false}
+  ],
+  "meta_mes":{"porcentaje":75,"hito_alcanzado":"75% Oro","proximo_hito":"100% Meta"},
+  "anuncios":[
+    {"id":"a1","fecha_o_hora":"Hoy, 16:00","titulo":"Capacitación de seguridad","descripcion":"Sesión breve para el equipo de soporte.","responsables":["Carlos Ruiz","María Paz"]},
+    {"id":"a2","fecha_o_hora":"Viernes, 09:30","titulo":"Mantenimiento de sala","descripcion":"La sala estará reservada para labores internas.","responsables":["Operaciones"]}
+  ],
+  "mensajes":[
+    {"tipo":"Urgente","texto":"Revisar las alertas abiertas antes del cierre."},
+    {"tipo":"Alerta","texto":"Hay dos solicitudes esperando asignación."},
+    {"tipo":"Anuncio","texto":"La reunión mensual comienza el viernes."},
+    {"tipo":"Por mejorar","texto":"Mantener puntualidad y registrar las llegadas."},
+    {"tipo":"Logro","texto":"El equipo completó el objetivo semanal."}
+  ],
+  "actividades":[
+    {"id":"ac1","tecnico":"Ana López","actividad_interna":"Actualizar catálogo","estado":"En curso","siguiente_paso":"Completar revisión técnica"},
+    {"id":"ac2","tecnico":"Carlos Ruiz","actividad_interna":"Preparar procedimientos","estado":"Pausada por servicio","siguiente_paso":"Retomar después del servicio"},
+    {"id":"ac3","tecnico":"María Paz","actividad_interna":"Documentar incidente","estado":"Lista para revisión","siguiente_paso":"Enviar a revisión"},
+    {"id":"ac4","tecnico":"José Vega","actividad_interna":"Organizar repuestos","estado":"Asignada","siguiente_paso":"Clasificar inventario"},
+    {"id":"ac5","tecnico":"Elena Díaz","actividad_interna":"Actualizar guía","estado":"Validada","siguiente_paso":"Publicada"}
+  ],
+  "actividad_disponible":{"titulo":"Inventariar herramientas","condicion":"Disponible para quien termine su tarea actual"}
+}
