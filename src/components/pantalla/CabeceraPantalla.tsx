@@ -4,9 +4,10 @@ import type { EstadoPantalla } from "@/types/pantalla";
 interface Props {
   estado: EstadoPantalla;
   fecha_hora: string;
+  titulo: string;
 }
 
-export function CabeceraPantalla({ estado, fecha_hora }: Props) {
+export function CabeceraPantalla({ estado, fecha_hora, titulo }: Props) {
   const estadoTexto = estado.reproduciendo ? "Reproduciendo" : "Pausado";
   return (
     <header className="flex h-[140px] items-center justify-between border-b-4 border-[var(--magenta)] bg-white px-10">
@@ -15,7 +16,7 @@ export function CabeceraPantalla({ estado, fecha_hora }: Props) {
         <span className="text-[28px] font-semibold">Soporte técnico</span>
       </div>
       <div className="flex-1 text-center">
-        <h1 className="text-[28px] font-bold">Servicios de hoy</h1>
+        <h1 className="text-[28px] font-bold">{titulo}</h1>
       </div>
       <div className="flex min-w-[520px] items-center justify-end gap-6 text-[28px]">
         <span aria-label={`Estado ${estadoTexto}`} className="font-semibold">
