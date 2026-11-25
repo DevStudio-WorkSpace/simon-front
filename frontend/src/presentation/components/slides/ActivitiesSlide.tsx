@@ -33,21 +33,13 @@ export const ActivitiesSlide: React.FC<ActivitiesSlideProps> = ({ data }) => {
 
       {/* 3 KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-4">
-        <KpiCard
-          number={data.inProgressCount}
-          label="en curso"
-          variant="scheduled"
-        />
+        <KpiCard number={data.inProgressCount} label="en curso" variant="scheduled" />
         <KpiCard
           number={data.pausedByServiceCount}
           label="pausada por servicio"
           variant="waiting"
         />
-        <KpiCard
-          number={data.readyForReviewCount}
-          label="lista para revisión"
-          variant="success"
-        />
+        <KpiCard number={data.readyForReviewCount} label="lista para revisión" variant="success" />
       </div>
 
       {/* Activities Table */}
@@ -116,4 +108,3 @@ export const ActivitiesSlide: React.FC<ActivitiesSlideProps> = ({ data }) => {
     </div>
   );
 };
-

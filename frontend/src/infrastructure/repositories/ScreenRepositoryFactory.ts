@@ -31,4 +31,3 @@ export class ScreenRepositoryFactory {
     this.instance = customRepository;
   }
 }
-

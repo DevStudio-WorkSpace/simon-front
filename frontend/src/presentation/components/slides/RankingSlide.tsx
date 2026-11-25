@@ -29,19 +29,18 @@ export const RankingSlide: React.FC<RankingSlideProps> = ({ monthName, contribut
         {contributors.map((c) => {
           const isFirst = c.position === 1;
           const isSecond = c.position === 2;
-          const isThird = c.position === 3;
 
           const topBorderColor = isFirst
             ? 'border-t-[#E6007E]'
             : isSecond
-            ? 'border-t-blue-500'
-            : 'border-t-amber-600';
+              ? 'border-t-blue-500'
+              : 'border-t-amber-600';
 
           const badgeBg = isFirst
             ? 'bg-amber-500 text-white'
             : isSecond
-            ? 'bg-slate-400 text-white'
-            : 'bg-amber-700 text-white';
+              ? 'bg-slate-400 text-white'
+              : 'bg-amber-700 text-white';
 
           // Component percentages for stacked bar
           const total = c.totalPoints;
@@ -58,7 +57,9 @@ export const RankingSlide: React.FC<RankingSlideProps> = ({ monthName, contribut
               <div>
                 {/* Header: Position badge & name */}
                 <div className="flex items-center gap-2.5 sm:gap-3 mb-2">
-                  <span className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-black text-base sm:text-lg shrink-0 ${badgeBg}`}>
+                  <span
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-black text-base sm:text-lg shrink-0 ${badgeBg}`}
+                  >
                     {c.position}
                   </span>
                   <span className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white truncate">
@@ -110,7 +111,9 @@ export const RankingSlide: React.FC<RankingSlideProps> = ({ monthName, contribut
 
                 {/* Subtotals: Actitud vs Aptitud */}
                 <div className="flex items-center justify-between text-base md:text-lg py-2 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Actitud · Aptitud</span>
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">
+                    Actitud · Aptitud
+                  </span>
                   <span className="font-extrabold text-slate-900 dark:text-white font-mono">
                     {c.attitudeSubtotal} · {c.aptitudeSubtotal}
                   </span>
@@ -159,10 +162,10 @@ export const RankingSlide: React.FC<RankingSlideProps> = ({ monthName, contribut
         </div>
 
         <span className="italic text-xs md:text-sm">
-          Ejemplo de reglas: puntual +10 por día · examen con 16 o más +50 · servicio cerrado sin reapertura +20
+          Ejemplo de reglas: puntual +10 por día · examen con 16 o más +50 · servicio cerrado sin
+          reapertura +20
         </span>
       </div>
     </div>
   );
 };
-

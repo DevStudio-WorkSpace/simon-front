@@ -1,6 +1,6 @@
-import { ServiceItem, ServicesMetrics } from '../../domain/models';
+import { ServicesData } from '../../domain/models';
 
-export const mockServicesMetrics: ServicesMetrics = {
+export const mockServicesMetrics: ServicesData['metrics'] = {
   totalToday: 9,
   urgentCount: 2,
   inProgressCount: 2,
@@ -8,7 +8,7 @@ export const mockServicesMetrics: ServicesMetrics = {
   pendingFollowupCount: 3,
 };
 
-export const mockServices: ServiceItem[] = [
+export const mockServices: ServicesData['items'] = [
   {
     id: 'srv-0151',
     orderNumber: '#0151',
@@ -20,6 +20,8 @@ export const mockServices: ServiceItem[] = [
     serviceDescription: 'Perfil desde cero',
     machineModel: 'Sublimación',
     state: 'atendiendo',
+    closed: false,
+    cancelled: false,
   },
   {
     id: 'srv-0152',
@@ -32,6 +34,8 @@ export const mockServices: ServiceItem[] = [
     serviceDescription: 'Inspección eléctrica',
     machineModel: 'Sublimación',
     state: 'atendiendo',
+    closed: false,
+    cancelled: false,
   },
   {
     id: 'srv-0148',
@@ -45,6 +49,8 @@ export const mockServices: ServiceItem[] = [
     machineModel: 'Secadora',
     state: 'espera_repuesto',
     waitReason: 'Espera repuesto',
+    closed: false,
+    cancelled: false,
   },
   {
     id: 'srv-0153',
@@ -57,6 +63,8 @@ export const mockServices: ServiceItem[] = [
     serviceDescription: 'Mantenimiento',
     machineModel: 'DTF',
     state: 'programado',
+    closed: false,
+    cancelled: false,
   },
   {
     id: 'srv-0154',
@@ -69,6 +77,8 @@ export const mockServices: ServiceItem[] = [
     serviceDescription: 'Inspección',
     machineModel: 'DTF',
     state: 'programado',
+    closed: false,
+    cancelled: false,
   },
   {
     id: 'srv-0155',
@@ -81,6 +91,8 @@ export const mockServices: ServiceItem[] = [
     serviceDescription: 'Activación',
     machineModel: 'DTF UV',
     state: 'programado',
+    closed: false,
+    cancelled: false,
   },
   {
     id: 'srv-0156',
@@ -93,6 +105,8 @@ export const mockServices: ServiceItem[] = [
     serviceDescription: 'Capacitación al operador',
     machineModel: 'DTF',
     state: 'programado',
+    closed: false,
+    cancelled: false,
   },
   {
     id: 'srv-0157',
@@ -105,6 +119,8 @@ export const mockServices: ServiceItem[] = [
     serviceDescription: 'Instalación de capping station',
     machineModel: 'Sublimación',
     state: 'sin_tecnico',
+    closed: false,
+    cancelled: false,
   },
   {
     id: 'srv-0149',
@@ -117,6 +133,7 @@ export const mockServices: ServiceItem[] = [
     serviceDescription: 'Actualización',
     machineModel: 'Sublimación',
     state: 'terminado',
+    closed: false,
+    cancelled: false,
   },
 ];
-

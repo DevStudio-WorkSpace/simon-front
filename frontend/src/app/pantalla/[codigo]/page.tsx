@@ -8,7 +8,7 @@ import { useScreenPlayerStore } from '../../../application/store/screenPlayerSto
 
 export default function PantallaPage() {
   const params = useParams();
-  const screenCode = (params?.codigo as string) || 'TV-SALA-01';
+  const _screenCode = (params?.codigo as string) || 'TV-SALA-01';
   const { getCurrentView } = useScreenPlayerStore();
   const currentView = getCurrentView();
   const title = currentView?.title || 'SIMON';

@@ -1,7 +1,12 @@
 'use client';
 
 import React from 'react';
-import { ServiceItem, ServicesMetrics, ServiceModality, ServiceState } from '../../../domain/models';
+import {
+  ServiceItem,
+  ServicesMetrics,
+  ServiceModality,
+  ServiceState,
+} from '../../../domain/models';
 import { KpiCard } from '../ui/KpiCard';
 import { Badge, BadgeVariant } from '../ui/Badge';
 import { MapPin, Monitor, Wrench } from 'lucide-react';
@@ -30,26 +35,10 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services 
     <div className="flex flex-col justify-between h-full gap-4 py-2">
       {/* 5 Top KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4">
-        <KpiCard
-          number={metrics.totalToday}
-          label="servicios hoy"
-          variant="neutral"
-        />
-        <KpiCard
-          number={metrics.urgentCount}
-          label="urgentes"
-          variant="urgent"
-        />
-        <KpiCard
-          number={metrics.inProgressCount}
-          label="atendiendo ahora"
-          variant="scheduled"
-        />
-        <KpiCard
-          number={metrics.unassignedCount}
-          label="sin técnico"
-          variant="unassigned"
-        />
+        <KpiCard number={metrics.totalToday} label="servicios hoy" variant="neutral" />
+        <KpiCard number={metrics.urgentCount} label="urgentes" variant="urgent" />
+        <KpiCard number={metrics.inProgressCount} label="atendiendo ahora" variant="scheduled" />
+        <KpiCard number={metrics.unassignedCount} label="sin técnico" variant="unassigned" />
         <KpiCard
           number={metrics.pendingFollowupCount}
           label="por llamar"
@@ -89,8 +78,8 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services 
                       isUrgent
                         ? 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20'
                         : item.state === 'sin_tecnico'
-                        ? 'border-l-4 border-l-purple-500'
-                        : ''
+                          ? 'border-l-4 border-l-purple-500'
+                          : ''
                     }`}
                   >
                     <td className="py-2.5 px-4 pl-6 font-mono font-bold text-slate-900 dark:text-white">
@@ -102,9 +91,7 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services 
                           Urgente
                         </span>
                       ) : (
-                        <span className="text-slate-600 dark:text-slate-400">
-                          Programado
-                        </span>
+                        <span className="text-slate-600 dark:text-slate-400">Programado</span>
                       )}
                     </td>
                     <td className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">
@@ -141,9 +128,7 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services 
             <span className="text-red-600 dark:text-red-400 font-bold">
               Urgente = máquina parada
             </span>
-            <span className="text-blue-600 dark:text-blue-400 font-semibold">
-              Programado
-            </span>
+            <span className="text-blue-600 dark:text-blue-400 font-semibold">Programado</span>
             <div className="flex items-center gap-3">
               <span className="flex items-center">
                 <MapPin className="w-3.5 h-3.5 mr-1 text-slate-500" /> Visita
@@ -164,4 +149,3 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services 
     </div>
   );
 };
-

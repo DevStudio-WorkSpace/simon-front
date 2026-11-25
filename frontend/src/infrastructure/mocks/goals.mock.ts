@@ -12,4 +12,3 @@ export const mockGoal: MonthlyGoalData = {
     { level: 'meta', label: 'Meta 100%', percentage: 100, reached: false },
   ],
 };
-

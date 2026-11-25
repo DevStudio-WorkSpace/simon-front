@@ -1,0 +1,13 @@
+node_modules
+.next
+coverage
+public
+src/app/fonts
+package-lock.json
+*.bundle
+*.zip
+*.png
+*.woff
+*.woff2
+*.ttf
+*.otf

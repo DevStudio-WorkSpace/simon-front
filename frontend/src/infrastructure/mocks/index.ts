@@ -5,4 +5,3 @@ export * from './goals.mock';
 export * from './announcements.mock';
 export * from './activities.mock';
 export * from './ticker.mock';
-

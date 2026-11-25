@@ -9,7 +9,7 @@ import { GoalSlide } from './GoalSlide';
 import { AnnouncementSlide } from './AnnouncementSlide';
 import { ActivitiesSlide } from './ActivitiesSlide';
 
-export function getSlideTitle(slideIndex?: number): string {
+export function getSlideTitle(_slideIndex?: number): string {
   const store = useScreenPlayerStore.getState();
   const currentView = store.getCurrentView();
   if (currentView) return currentView.title;
@@ -28,7 +28,9 @@ export const SlideRenderer: React.FC = () => {
     case 'puntualidad':
       return <PunctualitySlide data={data.punctuality} />;
     case 'ranking':
-      return <RankingSlide monthName={data.ranking.monthName} contributors={data.ranking.contributors} />;
+      return (
+        <RankingSlide monthName={data.ranking.monthName} contributors={data.ranking.contributors} />
+      );
     case 'meta':
       return <GoalSlide data={data.goal} />;
     case 'anuncio':

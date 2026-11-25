@@ -59,4 +59,3 @@ export const mockRanking = {
     },
   ] as RankingContributor[],
 };
-

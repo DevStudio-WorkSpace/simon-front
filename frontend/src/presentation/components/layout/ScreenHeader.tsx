@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useScreenPlayerStore } from '../../../application/store/screenPlayerStore';
 import { useThemeStore } from '../../../application/store/themeStore';
@@ -13,7 +12,8 @@ interface ScreenHeaderProps {
 }
 
 export const ScreenHeader: React.FC<ScreenHeaderProps> = ({ title }) => {
-  const { currentSlide, totalSlides, isPaused, progressPercent, getCurrentView } = useScreenPlayerStore();
+  const { currentSlide, totalSlides, isPaused, progressPercent, getCurrentView } =
+    useScreenPlayerStore();
   const { resolvedTheme, toggleTheme } = useThemeStore();
   const currentDateTime = useCurrentDateTime();
   const currentView = getCurrentView();
@@ -75,7 +75,11 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({ title }) => {
             title={`Cambiar a modo ${resolvedTheme === 'dark' ? 'claro' : 'oscuro'}`}
             aria-label="Alternar tema"
           >
-            {resolvedTheme === 'dark' ? <Sun className="w-4 h-4 sm:w-5 h-5" /> : <Moon className="w-4 h-4 sm:w-5 h-5" />}
+            {resolvedTheme === 'dark' ? (
+              <Sun className="w-4 h-4 sm:w-5 h-5" />
+            ) : (
+              <Moon className="w-4 h-4 sm:w-5 h-5" />
+            )}
           </button>
 
           {/* Player status pill */}

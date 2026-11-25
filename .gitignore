@@ -26,6 +26,14 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Capturas y duplicados prohibidos por el sprint
+/requirements/images/
+/frontend/src/icon.png
+
+# Entregables generados (se producen desde main, no se versionan)
+/simon-front_*.bundle
+/simon-front_*.zip
+
 # OS & Misc
 .DS_Store
 Thumbs.db

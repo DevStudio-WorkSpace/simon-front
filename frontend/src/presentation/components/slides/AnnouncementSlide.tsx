@@ -44,4 +44,3 @@ export const AnnouncementSlide: React.FC<AnnouncementSlideProps> = ({ data }) =>
     </div>
   );
 };
-

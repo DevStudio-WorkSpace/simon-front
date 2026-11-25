@@ -8,7 +8,20 @@ import { useState, useEffect } from 'react';
  */
 export function formatSimonDateTime(date: Date = new Date()): string {
   const day = date.getDate().toString().padStart(2, '0');
-  const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  const months = [
+    'ene',
+    'feb',
+    'mar',
+    'abr',
+    'may',
+    'jun',
+    'jul',
+    'ago',
+    'sep',
+    'oct',
+    'nov',
+    'dic',
+  ];
   const month = months[date.getMonth()];
   const year = date.getFullYear();
   const hours = date.getHours().toString().padStart(2, '0');
@@ -36,4 +49,3 @@ export function useCurrentDateTime(): string {
 
   return dateTimeStr;
 }
-

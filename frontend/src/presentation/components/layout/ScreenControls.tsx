@@ -5,7 +5,8 @@ import { useScreenPlayerStore } from '../../../application/store/screenPlayerSto
 import { ChevronLeft, ChevronRight, Play, Pause, SlidersHorizontal } from 'lucide-react';
 
 export const ScreenControls: React.FC = () => {
-  const { currentSlide, isPaused, nextSlide, prevSlide, togglePause, goToSlide, getActiveViews } = useScreenPlayerStore();
+  const { currentSlide, isPaused, nextSlide, prevSlide, togglePause, goToSlide, getActiveViews } =
+    useScreenPlayerStore();
   const [isOpen, setIsOpen] = useState(false);
   const activeViews = getActiveViews();
 
@@ -41,7 +42,11 @@ export const ScreenControls: React.FC = () => {
               title={isPaused ? 'Reanudar (Play)' : 'Pausar (Pausa)'}
               aria-label={isPaused ? 'Reanudar' : 'Pausar'}
             >
-              {isPaused ? <Play className="w-6 h-6 fill-current" /> : <Pause className="w-6 h-6 fill-current" />}
+              {isPaused ? (
+                <Play className="w-6 h-6 fill-current" />
+              ) : (
+                <Pause className="w-6 h-6 fill-current" />
+              )}
             </button>
 
             <button
@@ -87,4 +92,3 @@ export const ScreenControls: React.FC = () => {
     </div>
   );
 };
-
