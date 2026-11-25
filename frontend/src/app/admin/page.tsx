@@ -2,22 +2,21 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useScreenPlayerStore } from '../../application/store/screenPlayerStore';
 import { useThemeStore } from '../../application/store/themeStore';
 import { useAuthStore } from '../../application/store/authStore';
 import { AdminLogin } from '../../presentation/components/admin/AdminLogin';
-import { 
-  Tv, 
-  Play, 
-  Pause, 
-  ChevronLeft, 
-  ChevronRight, 
-  ListOrdered, 
-  Megaphone, 
-  Target, 
-  ClipboardList, 
-  Sun, 
+import {
+  Tv,
+  Play,
+  Pause,
+  ChevronLeft,
+  ChevronRight,
+  ListOrdered,
+  Megaphone,
+  Target,
+  ClipboardList,
+  Sun,
   Moon,
   ArrowRight,
   ArrowUp,
@@ -28,40 +27,38 @@ import {
   SlidersHorizontal,
   Eye,
   EyeOff,
-  Plus,
-  Minus,
   CheckCircle2,
-  Sparkles,
-  GripVertical
+  GripVertical,
 } from 'lucide-react';
 
 export default function AdminPage() {
   const { isAuthenticated, user, logout, checkAuth } = useAuthStore();
 
-  const { 
-    currentSlide, 
+  const {
+    currentSlide,
     totalSlides,
-    isPaused, 
-    secondsPerSlide, 
-    nextSlide, 
-    prevSlide, 
-    togglePause, 
-    goToSlide, 
+    isPaused,
+    secondsPerSlide,
+    nextSlide,
+    prevSlide,
+    togglePause,
+    goToSlide,
     goToViewId,
     viewsConfig,
     reorderViews,
     moveViewOrder,
-    updateViewSeconds,
     toggleViewActive,
     setGlobalSeconds,
     resetToDefaultViews,
     getActiveViews,
     getCurrentView,
-    data 
+    data,
   } = useScreenPlayerStore();
 
   const { resolvedTheme, toggleTheme, initTheme } = useThemeStore();
-  const [activeTab, setActiveTab] = useState<'control' | 'anuncios' | 'meta' | 'actividades' | 'marquesina'>('control');
+  const [activeTab, setActiveTab] = useState<
+    'control' | 'anuncios' | 'meta' | 'actividades' | 'marquesina'
+  >('control');
   const [globalTimeInput, setGlobalTimeInput] = useState<number>(10);
   const [draggedViewId, setDraggedViewId] = useState<number | null>(null);
   const [dragOverViewId, setDragOverViewId] = useState<number | null>(null);
@@ -86,6 +83,8 @@ export default function AdminPage() {
       const initialSec = active[0]?.seconds || viewsConfig[0]?.seconds || 10;
       setGlobalTimeInput(Math.max(3, initialSec));
     }
+    // La configuración inicial se captura una sola vez; los cambios posteriores llegan por eventos.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Prevent flash while checking localStorage session
@@ -104,10 +103,30 @@ export default function AdminPage() {
 
   // Simulated Bitácora for activity demo
   const sampleLogbook = [
-    { time: '09:10', author: 'Billy', action: 'Inicio', note: 'Inicia "Completar maletín 2". Resultado esperado: inventario completo.' },
-    { time: '10:20', author: 'Billy', action: 'Pausa por servicio', note: 'Surge servicio urgente #0152. Inventario terminado; faltan dos puntas. Próximo paso: reponer puntas.' },
-    { time: '12:30', author: 'Billy', action: 'Retoma', note: 'Terminó atención técnica. Confirma disponibilidad y retoma maletín.' },
-    { time: '13:00', author: 'Billy', action: 'Lista para revisión', note: 'Repone puntas, adjunta lista de verificación.' },
+    {
+      time: '09:10',
+      author: 'Billy',
+      action: 'Inicio',
+      note: 'Inicia "Completar maletín 2". Resultado esperado: inventario completo.',
+    },
+    {
+      time: '10:20',
+      author: 'Billy',
+      action: 'Pausa por servicio',
+      note: 'Surge servicio urgente #0152. Inventario terminado; faltan dos puntas. Próximo paso: reponer puntas.',
+    },
+    {
+      time: '12:30',
+      author: 'Billy',
+      action: 'Retoma',
+      note: 'Terminó atención técnica. Confirma disponibilidad y retoma maletín.',
+    },
+    {
+      time: '13:00',
+      author: 'Billy',
+      action: 'Lista para revisión',
+      note: 'Repone puntas, adjunta lista de verificación.',
+    },
   ];
 
   return (
@@ -155,7 +174,11 @@ export default function AdminPage() {
               className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Cambiar tema"
             >
-              {resolvedTheme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {resolvedTheme === 'dark' ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
             </button>
 
             <Link
@@ -263,7 +286,9 @@ export default function AdminPage() {
                   </div>
                   <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800/60">
                     <span className="text-xs text-slate-500 uppercase font-bold">Modo</span>
-                    <p className={`text-2xl font-black mt-1 ${isPaused ? 'text-amber-600' : 'text-emerald-600'}`}>
+                    <p
+                      className={`text-2xl font-black mt-1 ${isPaused ? 'text-amber-600' : 'text-emerald-600'}`}
+                    >
                       {isPaused ? 'Pausado' : 'Reproduciendo'}
                     </p>
                     <span className="text-xs text-slate-500 font-semibold block">
@@ -305,11 +330,17 @@ export default function AdminPage() {
                   <button
                     onClick={togglePause}
                     className={`p-6 rounded-full text-white font-bold shadow-xl transition-all active:scale-95 ${
-                      isPaused ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[#E6007E] hover:bg-[#C9006E]'
+                      isPaused
+                        ? 'bg-emerald-600 hover:bg-emerald-700'
+                        : 'bg-[#E6007E] hover:bg-[#C9006E]'
                     }`}
                     title={isPaused ? 'Reanudar' : 'Pausar'}
                   >
-                    {isPaused ? <Play className="w-8 h-8 fill-current" /> : <Pause className="w-8 h-8 fill-current" />}
+                    {isPaused ? (
+                      <Play className="w-8 h-8 fill-current" />
+                    ) : (
+                      <Pause className="w-8 h-8 fill-current" />
+                    )}
                   </button>
 
                   <button
@@ -336,8 +367,12 @@ export default function AdminPage() {
                             : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                         }`}
                       >
-                        <span className="truncate">{idx + 1}. {v.title.split(' ')[0]}</span>
-                        {currentView?.id === v.id && <ArrowRight className="w-3.5 h-3.5 shrink-0 ml-1" />}
+                        <span className="truncate">
+                          {idx + 1}. {v.title.split(' ')[0]}
+                        </span>
+                        {currentView?.id === v.id && (
+                          <ArrowRight className="w-3.5 h-3.5 shrink-0 ml-1" />
+                        )}
                       </button>
                     ))}
                   </div>
@@ -356,7 +391,8 @@ export default function AdminPage() {
                     </h2>
                   </div>
                   <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-                    Arrastrá las tarjetas para reordenar la secuencia fácilmente o activá/ocultá vistas de la rotación.
+                    Arrastrá las tarjetas para reordenar la secuencia fácilmente o activá/ocultá
+                    vistas de la rotación.
                   </p>
                 </div>
 
@@ -366,7 +402,9 @@ export default function AdminPage() {
                     onClick={() => {
                       resetToDefaultViews();
                       setGlobalTimeInput(10);
-                      setNotification('Valores restaurados al estado inicial por defecto (Default)');
+                      setNotification(
+                        'Valores restaurados al estado inicial por defecto (Default)',
+                      );
                       setTimeout(() => setNotification(null), 3500);
                     }}
                     className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs shadow-sm transition-all active:scale-95 border border-slate-300 dark:border-slate-700"
@@ -387,7 +425,9 @@ export default function AdminPage() {
                       Aplicar duración uniforme a todas las vistas
                     </span>
                     <span className="text-xs text-slate-500">
-                      Ciclo total actual: {totalCycleSeconds}s (aprox. {(totalCycleSeconds / 60).toFixed(1)} min) en {activeViews.length} vistas activas
+                      Ciclo total actual: {totalCycleSeconds}s (aprox.{' '}
+                      {(totalCycleSeconds / 60).toFixed(1)} min) en {activeViews.length} vistas
+                      activas
                     </span>
                   </div>
                 </div>
@@ -478,12 +518,12 @@ export default function AdminPage() {
                         isBeingDragged
                           ? 'opacity-40 scale-[0.98] border-dashed border-[#E6007E] bg-[#E6007E]/10'
                           : isDropTarget
-                          ? 'border-2 border-[#E6007E] bg-[#E6007E]/15 scale-[1.01] shadow-lg'
-                          : view.active
-                          ? isActiveNow
-                            ? 'bg-[#E6007E]/5 border-[#E6007E]/60 shadow-sm'
-                            : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
-                          : 'bg-slate-100/50 dark:bg-slate-900/20 border-dashed border-slate-300 dark:border-slate-800 opacity-60'
+                            ? 'border-2 border-[#E6007E] bg-[#E6007E]/15 scale-[1.01] shadow-lg'
+                            : view.active
+                              ? isActiveNow
+                                ? 'bg-[#E6007E]/5 border-[#E6007E]/60 shadow-sm'
+                                : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                              : 'bg-slate-100/50 dark:bg-slate-900/20 border-dashed border-slate-300 dark:border-slate-800 opacity-60'
                       }`}
                     >
                       {/* Drag Handle, Order arrows & Info */}
@@ -505,7 +545,9 @@ export default function AdminPage() {
                               moveViewOrder(view.id, 'up');
                             }}
                             className={`p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors ${
-                              isFirst ? 'opacity-20 cursor-not-allowed' : 'text-slate-700 dark:text-slate-300'
+                              isFirst
+                                ? 'opacity-20 cursor-not-allowed'
+                                : 'text-slate-700 dark:text-slate-300'
                             }`}
                             title="Subir de posición en el orden"
                             aria-label={`Subir ${view.title}`}
@@ -519,7 +561,9 @@ export default function AdminPage() {
                               moveViewOrder(view.id, 'down');
                             }}
                             className={`p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors ${
-                              isLast ? 'opacity-20 cursor-not-allowed' : 'text-slate-700 dark:text-slate-300'
+                              isLast
+                                ? 'opacity-20 cursor-not-allowed'
+                                : 'text-slate-700 dark:text-slate-300'
                             }`}
                             title="Bajar de posición en el orden"
                             aria-label={`Bajar ${view.title}`}
@@ -543,12 +587,17 @@ export default function AdminPage() {
                               </span>
                             )}
                           </div>
-                          <span className="text-xs text-slate-400 font-mono">tipo: {view.tipo}</span>
+                          <span className="text-xs text-slate-400 font-mono">
+                            tipo: {view.tipo}
+                          </span>
                         </div>
                       </div>
 
                       {/* Controls: Active toggle & Jump */}
-                      <div className="flex items-center gap-3 sm:gap-4 self-end sm:self-center" onClick={(e) => e.stopPropagation()}>
+                      <div
+                        className="flex items-center gap-3 sm:gap-4 self-end sm:self-center"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         {/* Active Toggle Switch */}
                         <button
                           onClick={() => toggleViewActive(view.id)}
@@ -557,9 +606,17 @@ export default function AdminPage() {
                               ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
                               : 'bg-slate-200 dark:bg-slate-800 text-slate-500 border border-slate-300 dark:border-slate-700'
                           }`}
-                          title={view.active ? 'Haga clic para ocultar de la rotación' : 'Haga clic para activar en la rotación'}
+                          title={
+                            view.active
+                              ? 'Haga clic para ocultar de la rotación'
+                              : 'Haga clic para activar en la rotación'
+                          }
                         >
-                          {view.active ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                          {view.active ? (
+                            <Eye className="w-3.5 h-3.5" />
+                          ) : (
+                            <EyeOff className="w-3.5 h-3.5" />
+                          )}
                           <span>{view.active ? 'Activa' : 'Oculta'}</span>
                         </button>
 
@@ -632,7 +689,9 @@ export default function AdminPage() {
             </p>
             <div className="space-y-4 max-w-xl">
               <div>
-                <label className="text-xs uppercase font-bold text-slate-500 block mb-1">Título</label>
+                <label className="text-xs uppercase font-bold text-slate-500 block mb-1">
+                  Título
+                </label>
                 <input
                   type="text"
                   defaultValue={data?.announcement.title || 'Capacitación en Mantenimiento UV'}
@@ -640,10 +699,15 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="text-xs uppercase font-bold text-slate-500 block mb-1">Mensaje</label>
+                <label className="text-xs uppercase font-bold text-slate-500 block mb-1">
+                  Mensaje
+                </label>
                 <textarea
                   rows={4}
-                  defaultValue={data?.announcement.description || 'Se realizará este viernes a las 15:00 en la sala principal.'}
+                  defaultValue={
+                    data?.announcement.description ||
+                    'Se realizará este viernes a las 15:00 en la sala principal.'
+                  }
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm font-semibold"
                 />
               </div>
@@ -668,7 +732,8 @@ export default function AdminPage() {
               <span>Progreso de Meta Comercial del Mes</span>
             </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Modificá el porcentaje de avance general. Por política ética de SIMON, no se visualizan importes en soles en la pantalla pública.
+              Modificá el porcentaje de avance general. Por política ética de SIMON, no se
+              visualizan importes en soles en la pantalla pública.
             </p>
             <div className="space-y-4 max-w-md">
               <div>
@@ -720,9 +785,7 @@ export default function AdminPage() {
                       {item.text}
                     </span>
                   </div>
-                  <span className="text-xs font-mono text-slate-400">
-                    Cinta activa
-                  </span>
+                  <span className="text-xs font-mono text-slate-400">Cinta activa</span>
                 </div>
               ))}
             </div>

@@ -67,7 +67,7 @@ export const useThemeStore = create<ThemeState>((set, get) => {
 
       try {
         mediaQuery.addEventListener('change', listener);
-      } catch (e) {
+      } catch {
         mediaQuery.addListener(listener);
       }
     },
@@ -76,8 +76,8 @@ export const useThemeStore = create<ThemeState>((set, get) => {
       if (typeof window === 'undefined') return;
       try {
         localStorage.setItem(STORAGE_KEY, newTheme);
-      } catch (e) {
-        console.error('Error saving theme to localStorage', e);
+      } catch (error) {
+        console.error('Error saving theme to localStorage', error);
       }
 
       const resolved = newTheme === 'system' ? resolveSystemTheme() : newTheme;

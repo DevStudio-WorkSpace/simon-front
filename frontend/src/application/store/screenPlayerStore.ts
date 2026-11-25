@@ -122,9 +122,11 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
 
         // Setup sync across tabs and local events if in browser
         if (typeof window !== 'undefined') {
-          const syncHandler = (e: StorageEvent | CustomEvent) => {
+          const syncHandler = (_e: StorageEvent | CustomEvent) => {
             const updatedViews = loadStoredViewsConfig();
-            const activeNow = updatedViews.filter((v) => v.active).sort((a, b) => a.order - b.order);
+            const activeNow = updatedViews
+              .filter((v) => v.active)
+              .sort((a, b) => a.order - b.order);
             const { currentViewIndex } = get();
             const safeIndex = currentViewIndex >= activeNow.length ? 0 : currentViewIndex;
 
@@ -140,10 +142,10 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
           window.addEventListener('storage', syncHandler as EventListener);
           window.addEventListener('simon_views_updated', syncHandler as EventListener);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         set({
           isLoading: false,
-          error: err.message || 'Error cargando datos de pantalla',
+          error: err instanceof Error ? err.message : 'Error cargando datos de pantalla',
         });
       }
     },
@@ -234,7 +236,7 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
       try {
         const refreshed = await screenRepository.getAllScreenData(screenCode);
         set({ data: refreshed });
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error refreshing data:', err);
       }
     },
@@ -332,7 +334,7 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
 
     setGlobalSeconds: (seconds: number) => {
       const parsed = Number(seconds);
-      const clamped = (!parsed || parsed <= 3) ? 3 : Math.min(300, Math.round(parsed));
+      const clamped = !parsed || parsed <= 3 ? 3 : Math.min(300, Math.round(parsed));
       const { viewsConfig } = get();
       const updated = viewsConfig.map((v) => ({ ...v, seconds: clamped }));
 

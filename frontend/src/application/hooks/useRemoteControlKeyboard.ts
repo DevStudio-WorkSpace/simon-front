@@ -58,4 +58,3 @@ export function useRemoteControlKeyboard() {
     };
   }, [nextSlide, prevSlide, togglePause, goToSlide]);
 }
-

@@ -53,4 +53,3 @@ export const ScreenTicker: React.FC<ScreenTickerProps> = ({ items }) => {
     </footer>
   );
 };
-

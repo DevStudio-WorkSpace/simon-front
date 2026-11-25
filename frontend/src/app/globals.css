@@ -23,7 +23,17 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-montserrat), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family:
+    var(--font-montserrat),
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    sans-serif;
   overflow-x: hidden;
   user-select: none;
 }
@@ -38,23 +48,27 @@ body {
 
 /* Subtle neumorphism shadow */
 .neumorph-shadow {
-  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.04), 0 1px 3px 0 rgba(0, 0, 0, 0.02);
+  box-shadow:
+    0 4px 14px 0 rgba(0, 0, 0, 0.04),
+    0 1px 3px 0 rgba(0, 0, 0, 0.02);
 }
 
 .dark .neumorph-shadow {
-  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.4), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+  box-shadow:
+    0 4px 20px 0 rgba(0, 0, 0, 0.4),
+    0 0 1px 1px rgba(255, 255, 255, 0.05);
 }
 
 /* Ambient gradient mesh background */
 .ambient-mesh {
-  background-image: 
+  background-image:
     radial-gradient(at 0% 0%, rgba(230, 0, 126, 0.04) 0px, transparent 50%),
     radial-gradient(at 100% 0%, rgba(37, 99, 235, 0.04) 0px, transparent 50%),
     radial-gradient(at 50% 100%, rgba(5, 150, 105, 0.03) 0px, transparent 50%);
 }
 
 .dark .ambient-mesh {
-  background-image: 
+  background-image:
     radial-gradient(at 0% 0%, rgba(255, 45, 149, 0.1) 0px, transparent 60%),
     radial-gradient(at 100% 0%, rgba(37, 99, 235, 0.12) 0px, transparent 60%),
     radial-gradient(at 50% 100%, rgba(5, 150, 105, 0.08) 0px, transparent 60%);
@@ -80,7 +94,6 @@ body {
   animation-play-state: paused;
 }
 
-
 /* Dotted background pattern */
 .dot-grid-pattern {
   background-image: radial-gradient(rgba(100, 116, 139, 0.25) 1px, transparent 1px);
@@ -94,7 +107,8 @@ body {
 
 /* Floating bokeh orbs */
 @keyframes float-slow {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) translateX(0px) scale(1);
   }
   50% {
@@ -103,7 +117,8 @@ body {
 }
 
 @keyframes float-reverse {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) translateX(0px) scale(1);
   }
   50% {

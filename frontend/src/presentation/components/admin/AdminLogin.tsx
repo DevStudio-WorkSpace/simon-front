@@ -3,19 +3,19 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../../../application/store/authStore';
 import { useThemeStore } from '../../../application/store/themeStore';
-import { 
-  Tv, 
-  CalendarCheck, 
-  Activity, 
-  ShieldCheck, 
-  Send, 
-  Lock, 
-  Mail, 
-  Eye, 
-  EyeOff, 
-  Sun, 
+import {
+  Tv,
+  CalendarCheck,
+  Activity,
+  ShieldCheck,
+  Send,
+  Lock,
+  Mail,
+  Eye,
+  EyeOff,
+  Sun,
   Moon,
-  Sparkles
+  Sparkles,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -119,8 +119,12 @@ export const AdminLogin: React.FC = () => {
                 <Activity className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-bold text-slate-100">Reportes y bitácora en tiempo real</p>
-                <p className="text-xs text-slate-400">Seguimiento de tareas internas sin pérdida de contexto</p>
+                <p className="text-sm font-bold text-slate-100">
+                  Reportes y bitácora en tiempo real
+                </p>
+                <p className="text-xs text-slate-400">
+                  Seguimiento de tareas internas sin pérdida de contexto
+                </p>
               </div>
             </div>
 
@@ -153,7 +157,8 @@ export const AdminLogin: React.FC = () => {
                 Bienvenido a SIMON-ADMIN
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Ingresá tus credenciales autorizadas para administrar la rotación, anuncios y bitácora.
+                Ingresá tus credenciales autorizadas para administrar la rotación, anuncios y
+                bitácora.
               </p>
             </div>
 
@@ -220,7 +225,8 @@ export const AdminLogin: React.FC = () => {
               <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-start gap-2.5 text-xs text-slate-300">
                 <Send className="w-4 h-4 text-[#E6007E] shrink-0 mt-0.5" />
                 <span>
-                  Acceso directo a la configuración de pantallas, mensajes de marquesina y validación de actividades.
+                  Acceso directo a la configuración de pantallas, mensajes de marquesina y
+                  validación de actividades.
                 </span>
               </div>
 
@@ -252,9 +258,7 @@ export const AdminLogin: React.FC = () => {
                 <span>Autocompletar demo</span>
               </button>
 
-              <span className="text-[11px] text-slate-400 font-mono">
-                coordinacion / simon2026
-              </span>
+              <span className="text-[11px] text-slate-400 font-mono">coordinacion / simon2026</span>
             </div>
 
             {/* Support link */}

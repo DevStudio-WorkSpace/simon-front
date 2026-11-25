@@ -38,7 +38,9 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({ children, titl
       <div className="h-screen w-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200">
         <div className="w-12 h-12 border-4 border-[#e6007e] border-t-transparent rounded-full animate-spin mb-4" />
         <h2 className="text-2xl font-bold">Iniciando SIMON...</h2>
-        <p className="text-slate-500 dark:text-slate-400 mt-2">Cargando vistas y sincronizando con soporte...</p>
+        <p className="text-slate-500 dark:text-slate-400 mt-2">
+          Cargando vistas y sincronizando con soporte...
+        </p>
       </div>
     );
   }
@@ -48,8 +50,12 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({ children, titl
       <div className="h-screen w-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 p-6">
         <div className="glass-panel p-8 rounded-2xl max-w-lg text-center border-red-300 dark:border-red-900/60 bg-red-50/50 dark:bg-red-950/30">
           <h2 className="text-2xl font-black text-red-600 dark:text-red-400">Error de conexión</h2>
-          <p className="mt-2 text-slate-700 dark:text-slate-300">{error || 'No se pudieron obtener datos'}</p>
-          <span className="block mt-4 text-xs text-slate-500">Última sincronización: {formatSimonDateTime(new Date())}</span>
+          <p className="mt-2 text-slate-700 dark:text-slate-300">
+            {error || 'No se pudieron obtener datos'}
+          </p>
+          <span className="block mt-4 text-xs text-slate-500">
+            Última sincronización: {formatSimonDateTime(new Date())}
+          </span>
         </div>
       </div>
     );
@@ -73,4 +79,3 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({ children, titl
     </div>
   );
 };
-

@@ -60,11 +60,15 @@ export const KpiCard: React.FC<KpiCardProps> = ({
     <div
       className={`glass-panel neumorph-shadow rounded-2xl p-3 sm:p-4 md:p-5 flex items-center gap-2.5 sm:gap-4 ${styles.bg} ${styles.border} ${className}`}
     >
-      <span className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight shrink-0 ${styles.number}`}>
+      <span
+        className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight shrink-0 ${styles.number}`}
+      >
         {number}
       </span>
       <div className="flex flex-col min-w-0">
-        <span className={`text-sm sm:text-lg md:text-xl lg:text-2xl leading-tight font-bold break-words ${styles.label}`}>
+        <span
+          className={`text-sm sm:text-lg md:text-xl lg:text-2xl leading-tight font-bold break-words ${styles.label}`}
+        >
           {label}
         </span>
         {subLabel && (
@@ -76,4 +80,3 @@ export const KpiCard: React.FC<KpiCardProps> = ({
     </div>
   );
 };
-

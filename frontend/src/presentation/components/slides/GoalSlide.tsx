@@ -57,7 +57,11 @@ export const GoalSlide: React.FC<GoalSlideProps> = ({ data }) => {
                       : 'bg-white dark:bg-slate-900 text-slate-400 border-slate-300 dark:border-slate-700'
                   }`}
                 >
-                  {isCompleted ? <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" /> : <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-slate-400" />}
+                  {isCompleted ? (
+                    <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
+                  ) : (
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-slate-400" />
+                  )}
                 </div>
 
                 <span
@@ -77,4 +81,3 @@ export const GoalSlide: React.FC<GoalSlideProps> = ({ data }) => {
     </div>
   );
 };
-
