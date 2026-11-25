@@ -50,3 +50,17 @@ git archive --format=zip -o simon-front_AAAA-MM-DD.zip main
 ```
 
 Limites: bundle menor que 5 MB y ZIP menor que 10 MB. Si se exceden, el bundle incluye artefactos generados que deben eliminarse.
+
+## Revision de la arquitectura
+
+La documentacion de `docs/arquitectura.md` se reviso contra el codigo de `frontend/src/domain` y `frontend/src/infrastructure`. Se comprobaron los puntos siguientes:
+
+- `IScreenRepository` contiene `subscribeToScreenState` y `updateScreenData`.
+- `ScreenState` y `ScreenAllData` contienen `lastDataAt`; `ScreenSyncStatus` contiene estado de conexion, ultimo error y reintentos.
+- `ScreenTickerItem` contiene `startsAt` y `endsAt`; `ScreenAllData` contiene la lista `announcements`.
+- `InternalActivitiesData.activityLog` contiene autor, accion, pendiente, motivo y siguiente paso.
+- `ServiceItem` contiene `closed` y `cancelled`, y ambos repositorios filtran esos servicios antes de entregarlos.
+- `HttpScreenRepository` usa retroceso exponencial acotado y permite cancelar la suscripcion.
+- No se modifico la logica de rotacion ni las vistas aprobadas desde `main`.
+
+La desviacion conocida sobre la confirmacion de ordenes queda registrada en el documento de arquitectura para que la Persona 2 la resuelva en su frente.
