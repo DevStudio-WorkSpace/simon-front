@@ -1,32 +1,79 @@
 import { fireEvent, render } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BackgroundPlaylist } from './BackgroundPlaylist';
 
-describe('BackgroundPlaylist', () => {
-  it('usa la playlist fija, en bucle y sin panel para ingresar link', () => {
-    const { container } = render(<BackgroundPlaylist />);
-    const iframe = container.querySelector('iframe') as HTMLIFrameElement;
-    const src = iframe.getAttribute('src') ?? '';
+type FakePlayer = {
+  mute: ReturnType<typeof vi.fn>;
+  unMute: ReturnType<typeof vi.fn>;
+  setVolume: ReturnType<typeof vi.fn>;
+  playVideo: ReturnType<typeof vi.fn>;
+  setLoop: ReturnType<typeof vi.fn>;
+  destroy: ReturnType<typeof vi.fn>;
+};
 
-    expect(src).toContain('list=PLaUiCYWlUUe6jEXKvewDnrj0F9Rc9Qzir');
-    expect(src).toContain('autoplay=1');
-    expect(src).toContain('loop=1');
-    expect(src).toContain('playsinline=1');
-    expect(src).toContain('mute=1');
+describe('BackgroundPlaylist', () => {
+  let player: FakePlayer;
+  let playerVars: Record<string, string | number>;
+
+  beforeEach(() => {
+    player = {
+      mute: vi.fn(),
+      unMute: vi.fn(),
+      setVolume: vi.fn(),
+      playVideo: vi.fn(),
+      setLoop: vi.fn(),
+      destroy: vi.fn(),
+    };
+
+    Object.defineProperty(window, 'YT', {
+      configurable: true,
+      value: {
+        Player: vi.fn().mockImplementation(
+          (
+            _target: HTMLElement,
+            options: {
+              playerVars: Record<string, string | number>;
+              events: { onReady: (event: { target: FakePlayer }) => void };
+            },
+          ) => {
+            playerVars = options.playerVars;
+            options.events.onReady({ target: player });
+            return player;
+          },
+        ),
+      },
+    });
+  });
+
+  it('usa la playlist fija, oculta y con bucle', () => {
+    const { container } = render(<BackgroundPlaylist />);
+    const holder = container.firstElementChild as HTMLElement;
+
+    expect(holder.className).toContain('opacity-0');
+    expect(holder.className).toContain('w-[480px]');
+    expect(holder.className).toContain('h-[270px]');
+    expect(playerVars).toMatchObject({
+      listType: 'playlist',
+      list: 'PLaUiCYWlUUe6jEXKvewDnrj0F9Rc9Qzir',
+      loop: 1,
+      autoplay: 1,
+    });
+    expect(player.setLoop).toHaveBeenCalledWith(true);
+    expect(player.mute).toHaveBeenCalled();
+    expect(player.playVideo).toHaveBeenCalled();
     expect(container.querySelector('input')).toBeNull();
   });
 
-  it('activa el sonido con la primera tecla y sigue oculta y única', () => {
-    const { container } = render(<BackgroundPlaylist />);
+  it('arranca silenciada y activa el sonido con la primera tecla', () => {
+    render(<BackgroundPlaylist />);
 
-    const silent = container.querySelector('iframe') as HTMLIFrameElement;
-    expect(silent.getAttribute('src')).toContain('mute=1');
+    expect(player.mute).toHaveBeenCalledTimes(1);
+    expect(player.unMute).not.toHaveBeenCalled();
 
     fireEvent.keyDown(window, { key: 'ArrowRight' });
 
-    const audible = container.querySelector('iframe') as HTMLIFrameElement;
-    expect(audible.getAttribute('src')).toContain('mute=0');
-    expect(audible.className).toContain('opacity-0');
-    expect(container.querySelectorAll('iframe')).toHaveLength(1);
+    expect(player.unMute).toHaveBeenCalledTimes(1);
+    expect(player.setVolume).toHaveBeenCalledWith(40);
+    expect(player.playVideo).toHaveBeenCalledTimes(2);
   });
 });
