@@ -12,16 +12,14 @@ export const RankingSlide: React.FC<RankingSlideProps> = ({ monthName, contribut
   return (
     <div className="flex flex-col justify-between h-full gap-4 py-2">
       {/* Title subtitle row */}
-      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-2">
         <div className="flex items-center gap-3">
           <div className="h-6 w-1.5 bg-[#E6007E] rounded-full" />
-          <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
+          <h2 className="text-2xl md:text-3xl font-black text-slate-900">
             Los que destacan este mes
           </h2>
         </div>
-        <span className="text-xl md:text-2xl font-bold text-slate-500 dark:text-slate-400 capitalize">
-          {monthName}
-        </span>
+        <span className="text-xl md:text-2xl font-bold text-slate-500 capitalize">{monthName}</span>
       </div>
 
       {/* 3 Contributor Podium Cards */}
@@ -62,17 +60,17 @@ export const RankingSlide: React.FC<RankingSlideProps> = ({ monthName, contribut
                   >
                     {c.position}
                   </span>
-                  <span className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white truncate">
+                  <span className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 truncate">
                     {c.technicianName}
                   </span>
                 </div>
 
                 {/* Big Score Number */}
                 <div className="mt-2 sm:mt-4 mb-4 sm:mb-6">
-                  <div className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-slate-900 dark:text-white tracking-tight leading-none">
+                  <div className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-slate-900 tracking-tight leading-none">
                     {c.totalPoints.toLocaleString('es-PE')}
                   </div>
-                  <span className="text-base sm:text-lg md:text-xl text-slate-500 dark:text-slate-400 font-semibold block mt-1">
+                  <span className="text-base sm:text-lg md:text-xl text-slate-500 font-semibold block mt-1">
                     puntos
                   </span>
                 </div>
@@ -110,27 +108,23 @@ export const RankingSlide: React.FC<RankingSlideProps> = ({ monthName, contribut
                 </div>
 
                 {/* Subtotals: Actitud vs Aptitud */}
-                <div className="flex items-center justify-between text-base md:text-lg py-2 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">
-                    Actitud · Aptitud
-                  </span>
-                  <span className="font-extrabold text-slate-900 dark:text-white font-mono">
+                <div className="flex items-center justify-between text-base md:text-lg py-2 border-b border-slate-100">
+                  <span className="text-slate-600 font-medium">Actitud · Aptitud</span>
+                  <span className="font-extrabold text-slate-900 font-mono">
                     {c.attitudeSubtotal} · {c.aptitudeSubtotal}
                   </span>
                 </div>
               </div>
 
               {/* Dominant and Growth Factors */}
-              <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800 text-base md:text-lg">
+              <div className="space-y-2 pt-4 border-t border-slate-100 text-base md:text-lg">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Más pesa</span>
-                  <span className="font-extrabold text-slate-900 dark:text-white">
-                    {c.dominantFactor}
-                  </span>
+                  <span className="text-slate-500">Más pesa</span>
+                  <span className="font-extrabold text-slate-900">{c.dominantFactor}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Creció</span>
-                  <span className="font-extrabold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                  <span className="text-slate-500">Creció</span>
+                  <span className="font-extrabold text-emerald-600 flex items-center gap-1">
                     {c.growthHighlight.factor} ▲{c.growthHighlight.gain}
                   </span>
                 </div>
@@ -141,7 +135,7 @@ export const RankingSlide: React.FC<RankingSlideProps> = ({ monthName, contribut
       </div>
 
       {/* Legend and Footnote */}
-      <div className="py-2 px-4 flex flex-col md:flex-row items-center justify-between gap-3 text-sm md:text-base text-slate-500 dark:text-slate-400">
+      <div className="py-2 px-4 flex flex-col md:flex-row items-center justify-between gap-3 text-sm md:text-base text-slate-500">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-[#008080]" />

@@ -12,30 +12,30 @@ export const GoalSlide: React.FC<GoalSlideProps> = ({ data }) => {
   return (
     <div className="flex flex-col items-center justify-center h-full max-w-4xl mx-auto py-6 text-center">
       {/* Title */}
-      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-4 sm:mb-6 tracking-tight">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 mb-4 sm:mb-6 tracking-tight">
         Meta comercial de {data.monthName}
       </h2>
 
       {/* Hero Percentage (>80px required by TV specs, here 120-140px on TV, responsive on mobile) */}
-      <div className="text-6xl sm:text-8xl md:text-9xl lg:text-[140px] font-black text-slate-900 dark:text-white tracking-tighter leading-none my-1 sm:my-2 drop-shadow-sm">
+      <div className="text-6xl sm:text-8xl md:text-9xl lg:text-[140px] font-black text-slate-900 tracking-tighter leading-none my-1 sm:my-2 drop-shadow-sm">
         {data.progressPercentage}%
       </div>
 
       {/* Milestone Reached Badge */}
-      <div className="mt-3 mb-2 sm:mt-4 sm:mb-3 inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-1.5 sm:py-2 rounded-full bg-emerald-100/90 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 font-extrabold text-base sm:text-xl md:text-2xl shadow-sm">
+      <div className="mt-3 mb-2 sm:mt-4 sm:mb-3 inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-1.5 sm:py-2 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-800 font-extrabold text-base sm:text-xl md:text-2xl shadow-sm">
         <Check className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
         <span>{data.currentMilestone}</span>
       </div>
 
       {/* Next Milestone Target */}
-      <p className="text-lg sm:text-2xl md:text-3xl font-semibold text-slate-600 dark:text-slate-300 mb-8 sm:mb-12">
+      <p className="text-lg sm:text-2xl md:text-3xl font-semibold text-slate-600 mb-8 sm:mb-12">
         {data.nextMilestone}
       </p>
 
       {/* Milestone Progress Bar Track */}
       <div className="w-full relative px-2 sm:px-6 mt-2 sm:mt-4">
         {/* Background track line */}
-        <div className="w-full h-3 sm:h-4 bg-slate-200 dark:bg-slate-800 rounded-full relative overflow-hidden">
+        <div className="w-full h-3 sm:h-4 bg-slate-200 rounded-full relative overflow-hidden">
           {/* Filled magenta progress */}
           <div
             className="h-full bg-[#E6007E] transition-all duration-700 ease-out rounded-full shadow-[0_0_12px_#E6007E]"
@@ -54,7 +54,7 @@ export const GoalSlide: React.FC<GoalSlideProps> = ({ data }) => {
                   className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-[10px] sm:text-xs border-2 transition-all shadow-md ${
                     isCompleted
                       ? 'bg-white text-[#E6007E] border-[#E6007E]'
-                      : 'bg-white dark:bg-slate-900 text-slate-400 border-slate-300 dark:border-slate-700'
+                      : 'bg-white text-slate-400 border-slate-300'
                   }`}
                 >
                   {isCompleted ? (
@@ -66,9 +66,7 @@ export const GoalSlide: React.FC<GoalSlideProps> = ({ data }) => {
 
                 <span
                   className={`text-xs sm:text-base md:text-xl font-bold mt-2 sm:mt-3 ${
-                    isCompleted
-                      ? 'text-[#E6007E] dark:text-[#FF2D95]'
-                      : 'text-slate-600 dark:text-slate-400'
+                    isCompleted ? 'text-[#E6007E]' : 'text-slate-600'
                   }`}
                 >
                   {m.label}

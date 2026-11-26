@@ -1,44 +1,43 @@
 import { fireEvent, render } from '@testing-library/react';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useRemoteControlKeyboard } from './useRemoteControlKeyboard';
-import { useThemeStore } from '../store/themeStore';
+import { useScreenPlayerStore } from '../store/screenPlayerStore';
 
 function Harness() {
   useRemoteControlKeyboard();
-  return <div />;
+  return <button>Control</button>;
 }
 
-describe('useRemoteControlKeyboard - cambio de tema', () => {
-  beforeEach(() => {
-    localStorage.clear();
-    useThemeStore.setState({ theme: 'dark', resolvedTheme: 'dark' });
-    document.documentElement.classList.add('dark');
+describe('useRemoteControlKeyboard', () => {
+  const initialState = useScreenPlayerStore.getState();
+
+  afterEach(() => {
+    useScreenPlayerStore.setState(initialState);
   });
 
-  it('cambia a modo claro con la tecla T del simulador', () => {
-    render(<Harness />);
-
-    fireEvent.keyDown(window, { key: 't' });
-
-    expect(useThemeStore.getState().resolvedTheme).toBe('light');
-    expect(document.documentElement.classList.contains('dark')).toBe(false);
-  });
-
-  it('cambia a modo claro con el boton rojo del control de TV', () => {
-    render(<Harness />);
-
-    fireEvent.keyDown(window, { key: 'F1' });
-
-    expect(useThemeStore.getState().resolvedTheme).toBe('light');
-  });
-
-  it('las teclas de navegacion y pausa no cambian el tema', () => {
+  it('navega y pausa con los botones del mando', () => {
+    const nextSlide = vi.fn();
+    const prevSlide = vi.fn();
+    const togglePause = vi.fn();
+    useScreenPlayerStore.setState({ nextSlide, prevSlide, togglePause });
     render(<Harness />);
 
     fireEvent.keyDown(window, { key: 'ArrowRight' });
-    fireEvent.keyDown(window, { key: '1' });
-    fireEvent.keyDown(window, { key: ' ' });
+    fireEvent.keyDown(window, { key: 'ArrowLeft' });
+    fireEvent.keyDown(window, { key: 'Enter' });
 
-    expect(useThemeStore.getState().resolvedTheme).toBe('dark');
+    expect(nextSlide).toHaveBeenCalledOnce();
+    expect(prevSlide).toHaveBeenCalledOnce();
+    expect(togglePause).toHaveBeenCalledOnce();
+  });
+
+  it('deja que OK active el botón enfocado sin pausar el reproductor', () => {
+    const togglePause = vi.fn();
+    useScreenPlayerStore.setState({ togglePause });
+    const { getByRole } = render(<Harness />);
+
+    fireEvent.keyDown(getByRole('button'), { key: 'Enter' });
+
+    expect(togglePause).not.toHaveBeenCalled();
   });
 });

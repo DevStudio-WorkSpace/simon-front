@@ -23,7 +23,7 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
         {/* Left Column: On-Time list */}
         <div className="lg:col-span-5 glass-panel neumorph-shadow rounded-2xl p-4 sm:p-6 flex flex-col justify-between">
           <div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-3 sm:mb-4">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 mb-3 sm:mb-4">
               Llegaron a tiempo
             </h2>
 
@@ -38,12 +38,12 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
                     key={item.position}
                     className={`flex items-center justify-between p-2 sm:p-2.5 px-3 sm:px-4 rounded-xl transition-all ${
                       isGold
-                        ? 'bg-amber-100/80 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 font-bold border border-amber-200 dark:border-amber-900/50 shadow-sm'
+                        ? 'bg-amber-100/80 text-amber-900 font-bold border border-amber-200 shadow-sm'
                         : isSilver
-                          ? 'bg-slate-200/60 dark:bg-slate-800/50 text-slate-800 dark:text-slate-200 font-semibold'
+                          ? 'bg-slate-200/60 text-slate-800 font-semibold'
                           : isBronze
-                            ? 'bg-amber-50 dark:bg-amber-950/20 text-amber-900 dark:text-amber-300 font-semibold'
-                            : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100/40 dark:hover:bg-slate-800/30'
+                            ? 'bg-amber-50 text-amber-900 font-semibold'
+                            : 'text-slate-700 hover:bg-slate-100/40'
                     }`}
                   >
                     <div className="flex items-center gap-2.5 sm:gap-3">
@@ -55,7 +55,7 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
                               ? 'bg-slate-400 text-white shadow-sm'
                               : isBronze
                                 ? 'bg-amber-700 text-white shadow-sm'
-                                : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                                : 'bg-slate-200 text-slate-600'
                         }`}
                       >
                         {item.position}
@@ -65,7 +65,7 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
                       </span>
                     </div>
 
-                    <span className="text-sm sm:text-base md:text-lg font-mono font-semibold text-slate-600 dark:text-slate-400">
+                    <span className="text-sm sm:text-base md:text-lg font-mono font-semibold text-slate-600">
                       {item.arrivalTime}
                     </span>
                   </div>
@@ -79,26 +79,26 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
         <div className="lg:col-span-7 flex flex-col justify-between gap-4">
           {/* Top 2 KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <div className="glass-panel neumorph-shadow rounded-2xl p-4 sm:p-5 bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-900/40">
-              <span className="text-sm sm:text-base md:text-lg font-bold text-emerald-800 dark:text-emerald-300 block mb-1">
+            <div className="glass-panel neumorph-shadow rounded-2xl p-4 sm:p-5 bg-emerald-50/70 border border-emerald-200/70">
+              <span className="text-sm sm:text-base md:text-lg font-bold text-emerald-800 block mb-1">
                 A tiempo hoy
               </span>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-emerald-700 dark:text-emerald-400">
+                <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-emerald-700">
                   {data.onTimeCount} de {data.totalTeamCount}
                 </span>
               </div>
             </div>
 
-            <div className="glass-panel neumorph-shadow rounded-2xl p-4 sm:p-5 bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-900/40">
-              <span className="text-sm sm:text-base md:text-lg font-bold text-amber-800 dark:text-amber-300 block mb-1">
+            <div className="glass-panel neumorph-shadow rounded-2xl p-4 sm:p-5 bg-amber-50/70 border border-amber-200/70">
+              <span className="text-sm sm:text-base md:text-lg font-bold text-amber-800 block mb-1">
                 Tardanzas hoy
               </span>
               <div className="flex items-baseline gap-2 sm:gap-3 flex-wrap">
-                <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-amber-700 dark:text-amber-400">
+                <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-amber-700">
                   {data.tardinessCountToday}
                 </span>
-                <span className="text-xs sm:text-base md:text-lg text-amber-800 dark:text-amber-300 font-semibold">
+                <span className="text-xs sm:text-base md:text-lg text-amber-800 font-semibold">
                   ({data.totalTardinessMinutes} min en total)
                 </span>
               </div>
@@ -106,29 +106,25 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
           </div>
 
           {/* Professional Weekly Tardiness Chart Card */}
-          <div className="glass-panel neumorph-shadow rounded-2xl p-4 sm:p-6 flex-1 flex flex-col justify-between border border-slate-200 dark:border-slate-800">
+          <div className="glass-panel neumorph-shadow rounded-2xl p-4 sm:p-6 flex-1 flex flex-col justify-between border border-slate-200">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 dark:text-white">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900">
                   Tardanzas del equipo por semana
                 </h3>
-                <span className="text-xs text-slate-500 dark:text-slate-400">
-                  Histórico semanal de incidencias
-                </span>
+                <span className="text-xs text-slate-500">Histórico semanal de incidencias</span>
               </div>
 
               {/* Interactive +2 Anonymous Trigger Button */}
               <button
                 onClick={() => setShowTardinessModal(true)}
-                className="group flex items-center gap-2 p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-300/80 dark:border-slate-700 active:scale-95 shadow-sm"
+                className="group flex items-center gap-2 p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 transition-all border border-slate-300/80 active:scale-95 shadow-sm"
                 title="Ver detalle anónimo de tardanzas"
               >
-                <span className="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400">
+                <span className="text-lg sm:text-xl font-black text-amber-600">
                   +{data.anonymousTardinessBadge}
                 </span>
-                <span className="text-xs font-bold text-slate-600 dark:text-slate-300 hidden sm:inline">
-                  anónimos
-                </span>
+                <span className="text-xs font-bold text-slate-600 hidden sm:inline">anónimos</span>
                 <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
               </button>
             </div>
@@ -136,7 +132,7 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
             {/* Structured Chart Container with Y-Axis, Grid Lines and Horizontal Scroll */}
             <div className="relative flex-1 flex items-stretch mt-2 pt-2">
               {/* Y-Axis Label Column */}
-              <div className="flex flex-col justify-between items-end pr-3 pb-8 text-xs font-mono font-bold text-slate-400 dark:text-slate-500 select-none border-r border-slate-300 dark:border-slate-700">
+              <div className="flex flex-col justify-between items-end pr-3 pb-8 text-xs font-mono font-bold text-slate-400 select-none border-r border-slate-300">
                 {yAxisTicks.map((tick) => (
                   <span key={tick} className="leading-none -mr-1">
                     {tick}
@@ -149,10 +145,7 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
                 {/* Horizontal Guide Grid Lines */}
                 <div className="absolute inset-0 right-0 pointer-events-none flex flex-col justify-between pb-8">
                   {yAxisTicks.map((tick) => (
-                    <div
-                      key={tick}
-                      className="w-full border-b border-dashed border-slate-200 dark:border-slate-800"
-                    />
+                    <div key={tick} className="w-full border-b border-dashed border-slate-200" />
                   ))}
                 </div>
 
@@ -172,9 +165,7 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
                         {/* Number on top of bar */}
                         <span
                           className={`text-lg sm:text-xl font-black mb-1 transition-transform group-hover:-translate-y-0.5 ${
-                            week.isCurrentWeek
-                              ? 'text-emerald-600 dark:text-emerald-400 drop-shadow'
-                              : 'text-slate-700 dark:text-slate-300'
+                            week.isCurrentWeek ? 'text-emerald-600 drop-shadow' : 'text-slate-700'
                           }`}
                         >
                           {week.count}
@@ -184,19 +175,19 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
                         <div
                           className={`w-full rounded-t-xl transition-all duration-700 shadow-md ${
                             week.isCurrentWeek
-                              ? 'bg-gradient-to-t from-emerald-600 to-emerald-400 dark:from-emerald-700 dark:to-emerald-400 shadow-emerald-500/25 ring-2 ring-emerald-400/40'
-                              : 'bg-gradient-to-t from-slate-400 to-slate-300 dark:from-slate-700 dark:to-slate-600 hover:from-slate-500 hover:to-slate-400'
+                              ? 'bg-gradient-to-t from-emerald-600 to-emerald-400 shadow-emerald-500/25 ring-2 ring-emerald-400/40'
+                              : 'bg-gradient-to-t from-slate-400 to-slate-300 hover:from-slate-500 hover:to-slate-400'
                           }`}
                           style={{ height: `${heightPercent}%` }}
                         />
 
                         {/* X-Axis Week Label */}
                         <div className="flex flex-col items-center text-center mt-2 absolute -bottom-1">
-                          <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                          <span className="text-xs sm:text-sm font-bold text-slate-800 whitespace-nowrap">
                             {week.weekLabel}
                           </span>
                           {week.isCurrentWeek ? (
-                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-extrabold whitespace-nowrap">
+                            <span className="text-[10px] text-emerald-600 font-extrabold whitespace-nowrap">
                               esta semana
                             </span>
                           ) : week.weekLabel === '26 oct' ? (
@@ -213,7 +204,7 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
             </div>
 
             {/* Longest Streak Pill */}
-            <div className="mt-3 p-2.5 sm:p-3 px-4 sm:px-5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/40 text-emerald-800 dark:text-emerald-300 font-bold text-sm sm:text-base md:text-lg flex items-center justify-between">
+            <div className="mt-3 p-2.5 sm:p-3 px-4 sm:px-5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-sm sm:text-base md:text-lg flex items-center justify-between">
               <span>
                 Racha más larga: {data.longestStreak.technicianName} ·{' '}
                 {data.longestStreak.consecutiveDays} días puntual
@@ -224,8 +215,8 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
       </div>
 
       {/* Bottom Improvement Notice Banner */}
-      <div className="p-3 sm:p-3.5 px-4 sm:px-6 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 text-amber-900 dark:text-amber-200 text-sm sm:text-base md:text-lg font-bold flex items-center gap-2">
-        <span className="text-amber-600 dark:text-amber-400 shrink-0">Por mejorar:</span>
+      <div className="p-3 sm:p-3.5 px-4 sm:px-6 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-sm sm:text-base md:text-lg font-bold flex items-center gap-2">
+        <span className="text-amber-600 shrink-0">Por mejorar:</span>
         <span className="truncate sm:whitespace-normal">
           {data.tardinessCountToday} tardanzas hoy. Meta de mañana:{' '}
           {data.improvementNotice.targetTardiness} · Entrada {data.improvementNotice.entryTime}{' '}
@@ -236,17 +227,17 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
       {/* Interactive Modal for +2 Anonymous Late Arrivals */}
       {showTardinessModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="glass-panel neumorph-shadow rounded-3xl p-6 sm:p-8 max-w-lg w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+          <div className="glass-panel neumorph-shadow rounded-3xl p-6 sm:p-8 max-w-lg w-full bg-white border border-slate-200 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
             {/* Modal Header */}
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
                   <span>Detalle de Tardanzas de Hoy</span>
-                  <span className="text-xs bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded-full font-bold">
+                  <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">
                     +{data.anonymousTardinessBadge}
                   </span>
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                <p className="text-xs sm:text-sm text-slate-500 mt-1">
                   Métricas de puntualidad registradas para auditoría
                 </p>
               </div>
@@ -256,7 +247,7 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
                   setShowTardinessModal(false);
                   setRevealNames(false);
                 }}
-                className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"
+                className="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
                 aria-label="Cerrar modal"
               >
                 <X className="w-5 h-5" />
@@ -264,7 +255,7 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
             </div>
 
             {/* Privacy Policy Callout Box (SIMON Sprint 1 Rule 63) */}
-            <div className="p-3.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/40 flex items-start gap-3 text-xs sm:text-sm text-blue-800 dark:text-blue-300">
+            <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 flex items-start gap-3 text-xs sm:text-sm text-blue-800">
               <Info className="w-4 h-4 shrink-0 mt-0.5" />
               <span>
                 <strong>Regla de Privacidad (SIMON-S1-T05):</strong> En la TV pública de la sala,
@@ -293,31 +284,29 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
               ).map((late, idx) => (
                 <div
                   key={late.id}
-                  className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 flex items-center justify-between"
+                  className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/70 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-mono font-bold text-xs text-slate-700 dark:text-slate-300">
+                    <span className="w-7 h-7 rounded-full bg-slate-200 flex items-center justify-center font-mono font-bold text-xs text-slate-700">
                       #{idx + 1}
                     </span>
                     <div>
-                      <p className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
+                      <p className="font-bold text-sm sm:text-base text-slate-900">
                         {revealNames ? (
-                          <span className="text-red-600 dark:text-red-400">
-                            {late.technicianName}
-                          </span>
+                          <span className="text-red-600">{late.technicianName}</span>
                         ) : (
                           <span className="font-mono text-slate-400">
                             Técnico Anónimo #{idx + 1}
                           </span>
                         )}
                       </p>
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                      <span className="text-xs text-slate-500">
                         Entrada marcada: {late.arrivalTime}
                       </span>
                     </div>
                   </div>
 
-                  <span className="font-mono font-extrabold text-amber-600 dark:text-amber-400 text-sm sm:text-base">
+                  <span className="font-mono font-extrabold text-amber-600 text-sm sm:text-base">
                     +{late.minutesLate} min
                   </span>
                 </div>
@@ -325,10 +314,10 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
             </div>
 
             {/* Supervisor / Admin reveal button */}
-            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
               <button
                 onClick={() => setRevealNames(!revealNames)}
-                className="flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                className="flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
               >
                 {revealNames ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 <span>
@@ -343,7 +332,7 @@ export const PunctualitySlide: React.FC<PunctualitySlideProps> = ({ data }) => {
                   setShowTardinessModal(false);
                   setRevealNames(false);
                 }}
-                className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs shadow-md transition-all active:scale-95"
+                className="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold text-xs shadow-md transition-all active:scale-95"
               >
                 Cerrar
               </button>

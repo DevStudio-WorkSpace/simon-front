@@ -3,21 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #f8fafc;
+  color-scheme: only light;
+  --background: #ffffff;
   --foreground: #0f172a;
-  --card-bg: rgba(255, 255, 255, 0.95);
+  --card-bg: #ffffff;
   --card-border: rgba(226, 232, 240, 0.8);
   --brand-magenta: #e6007e;
   --brand-magenta-glow: rgba(230, 0, 126, 0.15);
-}
-
-.dark {
-  --background: #0b0f19;
-  --foreground: #f1f5f9;
-  --card-bg: rgba(17, 24, 39, 0.85);
-  --card-border: rgba(255, 255, 255, 0.1);
-  --brand-magenta: #ff2d95;
-  --brand-magenta-glow: rgba(255, 45, 149, 0.25);
 }
 
 body {
@@ -53,27 +45,7 @@ body {
     0 1px 3px 0 rgba(0, 0, 0, 0.02);
 }
 
-.dark .neumorph-shadow {
-  box-shadow:
-    0 4px 20px 0 rgba(0, 0, 0, 0.4),
-    0 0 1px 1px rgba(255, 255, 255, 0.05);
-}
-
 /* Ambient gradient mesh background */
-.ambient-mesh {
-  background-image:
-    radial-gradient(at 0% 0%, rgba(230, 0, 126, 0.04) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(37, 99, 235, 0.04) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(5, 150, 105, 0.03) 0px, transparent 50%);
-}
-
-.dark .ambient-mesh {
-  background-image:
-    radial-gradient(at 0% 0%, rgba(255, 45, 149, 0.1) 0px, transparent 60%),
-    radial-gradient(at 100% 0%, rgba(37, 99, 235, 0.12) 0px, transparent 60%),
-    radial-gradient(at 50% 100%, rgba(5, 150, 105, 0.08) 0px, transparent 60%);
-}
-
 /* Ticker marquee animation */
 @keyframes ticker {
   0% {
@@ -97,11 +69,6 @@ body {
 /* Dotted background pattern */
 .dot-grid-pattern {
   background-image: radial-gradient(rgba(100, 116, 139, 0.25) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-
-.dark .dot-grid-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 

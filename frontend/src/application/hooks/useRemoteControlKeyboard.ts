@@ -2,11 +2,9 @@
 
 import { useEffect } from 'react';
 import { useScreenPlayerStore } from '../store/screenPlayerStore';
-import { useThemeStore } from '../store/themeStore';
 
 export function useRemoteControlKeyboard() {
   const { nextSlide, prevSlide, togglePause, goToSlide } = useScreenPlayerStore();
-  const { toggleTheme } = useThemeStore();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -53,15 +51,6 @@ export function useRemoteControlKeyboard() {
           togglePause();
           break;
 
-        // Theme: "T" in the simulator, red colour button on TV remotes
-        case 't':
-        case 'T':
-        case 'F1':
-        case 'ColorF0Red':
-          event.preventDefault();
-          toggleTheme();
-          break;
-
         // Number keys 1-6 for quick testing
         case '1':
         case '2':
@@ -82,5 +71,5 @@ export function useRemoteControlKeyboard() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [nextSlide, prevSlide, togglePause, goToSlide, toggleTheme]);
+  }, [nextSlide, prevSlide, togglePause, goToSlide]);
 }

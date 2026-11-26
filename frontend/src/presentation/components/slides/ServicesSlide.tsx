@@ -25,21 +25,32 @@ const stateVariantMap: Record<ServiceState, { label: string; variant: BadgeVaria
 };
 
 const modalityIcons: Record<ServiceModality, React.ReactNode> = {
-  visita: <MapPin className="w-4 h-4 text-slate-500 inline mr-1.5" />,
-  remoto: <Monitor className="w-4 h-4 text-slate-500 inline mr-1.5" />,
-  taller: <Wrench className="w-4 h-4 text-slate-500 inline mr-1.5" />,
+  visita: <MapPin className="mr-1 h-3.5 w-3.5 shrink-0 text-slate-500 xl:h-5 xl:w-5" />,
+  remoto: <Monitor className="mr-1 h-3.5 w-3.5 shrink-0 text-slate-500 xl:h-5 xl:w-5" />,
+  taller: <Wrench className="mr-1 h-3.5 w-3.5 shrink-0 text-slate-500 xl:h-5 xl:w-5" />,
 };
 
 export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services }) => {
   return (
-    <div className="flex flex-col justify-between h-full gap-4 py-2">
+    <div className="flex w-full flex-col gap-2.5 xl:gap-4">
       {/* 5 Top KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4">
-        <KpiCard number={metrics.totalToday} label="servicios hoy" variant="neutral" />
-        <KpiCard number={metrics.urgentCount} label="urgentes" variant="urgent" />
-        <KpiCard number={metrics.inProgressCount} label="atendiendo ahora" variant="scheduled" />
-        <KpiCard number={metrics.unassignedCount} label="sin técnico" variant="unassigned" />
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5 xl:gap-4">
+        <KpiCard compact number={metrics.totalToday} label="servicios hoy" variant="neutral" />
+        <KpiCard compact number={metrics.urgentCount} label="urgentes" variant="urgent" />
         <KpiCard
+          compact
+          number={metrics.inProgressCount}
+          label="atendiendo ahora"
+          variant="scheduled"
+        />
+        <KpiCard
+          compact
+          number={metrics.unassignedCount}
+          label="sin técnico"
+          variant="unassigned"
+        />
+        <KpiCard
+          compact
           number={metrics.pendingFollowupCount}
           label="por llamar"
           subLabel="(seguimiento)"
@@ -48,22 +59,32 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services 
       </div>
 
       {/* Main Services Table */}
-      <div className="glass-panel neumorph-shadow rounded-2xl overflow-hidden flex-1 flex flex-col justify-between border border-slate-200/80 dark:border-slate-800">
+      <div className="flex flex-col overflow-hidden rounded-lg border border-slate-200">
         <div className="overflow-x-auto w-full">
-          <table className="min-w-[720px] lg:min-w-full text-left border-collapse">
+          <table className="w-full min-w-[680px] table-fixed border-collapse text-left [&_td]:px-2 [&_td]:py-1 [&_th]:px-2 [&_th]:py-1.5 xl:[&_td]:px-3 xl:[&_td]:py-2 xl:[&_th]:px-3 xl:[&_th]:py-2">
+            <colgroup>
+              <col className="w-[7%]" />
+              <col className="w-[12%]" />
+              <col className="w-[7%]" />
+              <col className="w-[12%]" />
+              <col className="w-[15%]" />
+              <col className="w-[20%]" />
+              <col className="w-[13%]" />
+              <col className="w-[14%]" />
+            </colgroup>
             <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-sm md:text-base uppercase tracking-wider font-bold">
-                <th className="py-3 px-4 pl-6">N°</th>
-                <th className="py-3 px-4">Prioridad</th>
-                <th className="py-3 px-4">Hora</th>
-                <th className="py-3 px-4">Técnico</th>
-                <th className="py-3 px-4">Cliente</th>
-                <th className="py-3 px-4">Servicio</th>
-                <th className="py-3 px-4">Máquina</th>
-                <th className="py-3 px-4 pr-6 text-right">Estado</th>
+              <tr className="border-b border-slate-200 text-slate-500 text-xs font-bold xl:text-lg">
+                <th>N°</th>
+                <th>Prioridad</th>
+                <th>Hora</th>
+                <th>Técnico</th>
+                <th>Cliente</th>
+                <th>Servicio</th>
+                <th>Máquina</th>
+                <th className="text-center">Estado</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-slate-800 dark:text-slate-200 text-base md:text-lg">
+            <tbody className="divide-y divide-slate-100 text-xs leading-tight text-slate-800 xl:text-lg">
               {services.map((item) => {
                 const isUrgent = item.priority === 'urgente';
                 const stateConfig = stateVariantMap[item.state] || {
@@ -74,44 +95,38 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services 
                 return (
                   <tr
                     key={item.id}
-                    className={`transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-800/30 ${
+                    className={`transition-colors hover:bg-slate-100 ${
                       isUrgent
-                        ? 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20'
+                        ? 'border-l-4 border-l-red-600 bg-red-50/30'
                         : item.state === 'sin_tecnico'
                           ? 'border-l-4 border-l-purple-500'
-                          : ''
+                          : 'even:bg-slate-50'
                     }`}
                   >
-                    <td className="py-2.5 px-4 pl-6 font-mono font-bold text-slate-900 dark:text-white">
-                      {item.orderNumber}
-                    </td>
-                    <td className="py-2.5 px-4 font-bold">
+                    <td className="font-mono font-bold text-slate-900">{item.orderNumber}</td>
+                    <td className="font-bold">
                       {isUrgent ? (
-                        <span className="text-red-600 dark:text-red-400 font-extrabold flex items-center gap-1">
-                          Urgente
-                        </span>
+                        <span className="text-red-600 font-extrabold">Urgente</span>
                       ) : (
-                        <span className="text-slate-600 dark:text-slate-400">Programado</span>
+                        <span className="text-slate-600">Programado</span>
                       )}
                     </td>
-                    <td className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">
-                      {item.time}
+                    <td className="font-semibold text-slate-700">{item.time}</td>
+                    <td className="font-bold text-slate-900">{item.technicianName}</td>
+                    <td className="font-medium">
+                      <span className="flex items-center">
+                        {modalityIcons[item.modality]}
+                        {item.clientName}
+                      </span>
                     </td>
-                    <td className="py-2.5 px-4 font-bold text-slate-900 dark:text-white">
-                      {item.technicianName}
-                    </td>
-                    <td className="py-2.5 px-4 font-medium flex items-center">
-                      {modalityIcons[item.modality]}
-                      {item.clientName}
-                    </td>
-                    <td className="py-2.5 px-4 text-slate-700 dark:text-slate-300">
-                      {item.serviceDescription}
-                    </td>
-                    <td className="py-2.5 px-4 font-medium text-slate-700 dark:text-slate-300">
-                      {item.machineModel}
-                    </td>
-                    <td className="py-2.5 px-4 pr-6 text-right">
-                      <Badge variant={stateConfig.variant} size="sm">
+                    <td className="break-words text-slate-700">{item.serviceDescription}</td>
+                    <td className="font-medium text-slate-700">{item.machineModel}</td>
+                    <td className="text-center">
+                      <Badge
+                        variant={stateConfig.variant}
+                        size="sm"
+                        className="w-full justify-center !px-1 !py-0.5 !text-[11px] !leading-tight xl:!text-base"
+                      >
                         {stateConfig.label}
                       </Badge>
                     </td>
@@ -123,12 +138,10 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services 
         </div>
 
         {/* Table Footer / Legend */}
-        <div className="py-2.5 px-4 sm:px-6 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs sm:text-sm md:text-base text-slate-500 dark:text-slate-400">
+        <div className="flex flex-col items-start justify-between gap-1 border-t border-slate-200 px-2 py-1.5 text-[11px] text-slate-500 sm:flex-row sm:items-center xl:px-3 xl:text-base">
           <div className="flex flex-wrap items-center gap-3 sm:gap-6">
-            <span className="text-red-600 dark:text-red-400 font-bold">
-              Urgente = máquina parada
-            </span>
-            <span className="text-blue-600 dark:text-blue-400 font-semibold">Programado</span>
+            <span className="text-red-600 font-bold">Urgente = máquina parada</span>
+            <span className="text-blue-600 font-semibold">Programado</span>
             <div className="flex items-center gap-3">
               <span className="flex items-center">
                 <MapPin className="w-3.5 h-3.5 mr-1 text-slate-500" /> Visita
@@ -141,9 +154,7 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services 
               </span>
             </div>
           </div>
-          <span className="font-semibold text-slate-600 dark:text-slate-300 self-end sm:self-auto">
-            Página 1/1
-          </span>
+          <span className="font-semibold text-slate-600 self-end sm:self-auto">Página 1/1</span>
         </div>
       </div>
     </div>

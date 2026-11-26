@@ -13,9 +13,9 @@ export const metadata: Metadata = {
   title: 'SIMON — GO Service LATAM',
   description: 'Sistema Informativo y de Monitoreo de Soporte Técnico',
   icons: {
-    icon: '/icon.png',
-    shortcut: '/icon.png',
-    apple: '/icon.png',
+    icon: '/go-service-latam.png',
+    shortcut: '/go-service-latam.png',
+    apple: '/go-service-latam.png',
   },
 };
 
@@ -27,28 +27,9 @@ export default function RootLayout({
   return (
     <html lang="es" className={montserrat.variable} suppressHydrationWarning>
       <head>
-        <link rel="icon" type="image/png" href="/icon.png" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var stored = localStorage.getItem('simon-theme');
-                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (stored === 'dark' || (!stored && prefersDark) || (stored === 'system' && prefersDark)) {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
+        <meta name="color-scheme" content="only light" />
       </head>
-      <body className="antialiased min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100">
-        {children}
-      </body>
+      <body className="antialiased min-h-screen">{children}</body>
     </html>
   );
 }
