@@ -6,6 +6,7 @@ import { useRemoteControlKeyboard } from '../../../application/hooks/useRemoteCo
 import { formatSimonDateTime } from '../../../application/hooks/useCurrentDateTime';
 import { ScreenHeader } from './ScreenHeader';
 import { ScreenTicker } from './ScreenTicker';
+import { BackgroundPlaylist } from './BackgroundPlaylist';
 
 interface ScreenContainerProps {
   children: React.ReactNode;
@@ -58,6 +59,9 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({ children, titl
 
   return (
     <div className="flex min-h-screen w-full flex-col overflow-x-hidden md:min-h-dvh bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
+      {/* Fixed background playlist: no panel, no user link */}
+      <BackgroundPlaylist />
+
       {/* Shared Header */}
       <ScreenHeader title={title} />
 
