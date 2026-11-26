@@ -125,7 +125,7 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services 
                       <Badge
                         variant={stateConfig.variant}
                         size="sm"
-                        className="w-full justify-center !px-1 !py-0.5 !text-[11px] !leading-tight xl:!text-base"
+                        className="w-full justify-center !border-0 !px-1 !py-0.5 !text-[11px] !leading-tight xl:!text-base"
                       >
                         {stateConfig.label}
                       </Badge>

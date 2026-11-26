@@ -41,7 +41,7 @@ export const ScreenTicker: React.FC<ScreenTickerProps> = ({ items, compact = fal
 
             return (
               <div key={`${item.id}-${index}`} className="flex items-center gap-3 shrink-0">
-                <Badge variant={variant} size="sm">
+                <Badge variant={variant} size="sm" className="!border-0">
                   {label}
                 </Badge>
                 <span
