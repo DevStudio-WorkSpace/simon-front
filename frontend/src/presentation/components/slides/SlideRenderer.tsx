@@ -17,14 +17,20 @@ export function getSlideTitle(_slideIndex?: number): string {
 }
 
 export const SlideRenderer: React.FC = () => {
-  const { data, getCurrentView } = useScreenPlayerStore();
+  const { data, getCurrentView, progressPercent, secondsPerSlide } = useScreenPlayerStore();
   const currentView = getCurrentView();
 
   if (!data || !currentView) return null;
 
   switch (currentView.tipo) {
     case 'servicios':
-      return <ServicesSlide metrics={data.services.metrics} services={data.services.items} />;
+      return (
+        <ServicesSlide
+          metrics={data.services.metrics}
+          services={data.services.items}
+          progressPercent={progressPercent}
+        />
+      );
     case 'puntualidad':
       return <PunctualitySlide data={data.punctuality} />;
     case 'ranking':
@@ -34,10 +40,22 @@ export const SlideRenderer: React.FC = () => {
     case 'meta':
       return <GoalSlide data={data.goal} />;
     case 'anuncio':
-      return <AnnouncementSlide data={data.announcement} />;
+      return (
+        <AnnouncementSlide
+          announcements={data.announcements}
+          progressPercent={progressPercent}
+          secondsPerSlide={secondsPerSlide}
+        />
+      );
     case 'actividades':
       return <ActivitiesSlide data={data.activities} />;
     default:
-      return <ServicesSlide metrics={data.services.metrics} services={data.services.items} />;
+      return (
+        <ServicesSlide
+          metrics={data.services.metrics}
+          services={data.services.items}
+          progressPercent={progressPercent}
+        />
+      );
   }
 };

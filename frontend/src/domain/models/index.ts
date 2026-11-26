@@ -59,13 +59,6 @@ export interface WeeklyTardiness {
   isCurrentWeek?: boolean;
 }
 
-export interface LateArrivalRecord {
-  id: string;
-  technicianName: string;
-  arrivalTime: string;
-  minutesLate: number;
-}
-
 export interface PunctualityData {
   onTimeCount: number;
   totalTeamCount: number;
@@ -74,7 +67,6 @@ export interface PunctualityData {
   onTimeList: OnTimeRecord[];
   weeklyTardinessHistory: WeeklyTardiness[];
   anonymousTardinessBadge: number;
-  lateArrivalsList?: LateArrivalRecord[];
   longestStreak: {
     technicianName: string;
     consecutiveDays: number;

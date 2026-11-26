@@ -6,7 +6,6 @@ import { Badge, BadgeVariant } from '../ui/Badge';
 
 interface ScreenTickerProps {
   items: ScreenTickerItem[];
-  compact?: boolean;
 }
 
 const typeVariantMap: Record<string, BadgeVariant> = {
@@ -25,13 +24,18 @@ const typeLabelMap: Record<string, string> = {
   logro: 'Logro',
 };
 
-export const ScreenTicker: React.FC<ScreenTickerProps> = ({ items, compact = false }) => {
+export const ScreenTicker: React.FC<ScreenTickerProps> = ({ items }) => {
   // We duplicate the list so the ticker can loop smoothly
-  const loopedItems = [...items, ...items];
+  const ordered = [...items].sort(
+    (a, b) => Number(b.type === 'urgente') - Number(a.type === 'urgente'),
+  );
+  const loopedItems = [...ordered, ...ordered];
 
   return (
     <footer
-      className={`z-20 min-w-0 w-full overflow-hidden bg-slate-100 px-4 backdrop-blur-md ${compact ? 'py-1.5' : 'border-t border-slate-200 py-2.5'}`}
+      className={
+        'z-20 w-full overflow-hidden border-t border-slate-200 bg-slate-100 px-4 py-1.5 backdrop-blur-md'
+      }
     >
       <div className="flex items-center overflow-hidden">
         <div className="animate-ticker flex items-center gap-10">
@@ -44,9 +48,7 @@ export const ScreenTicker: React.FC<ScreenTickerProps> = ({ items, compact = fal
                 <Badge variant={variant} size="sm" className="!border-0">
                   {label}
                 </Badge>
-                <span
-                  className={`font-semibold text-slate-800 ${compact ? 'text-xs xl:text-base' : 'text-base md:text-lg'}`}
-                >
+                <span className={'text-xs font-semibold text-slate-800 xl:text-base'}>
                   {item.text}
                 </span>
                 <span className="text-slate-300 mx-2">·</span>

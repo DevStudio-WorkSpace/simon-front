@@ -1,81 +1,49 @@
-'use client';
-
-import React from 'react';
-import { MonthlyGoalData } from '../../../domain/models';
 import { Check } from 'lucide-react';
+import type { MonthlyGoalData } from '../../../domain/models';
 
-interface GoalSlideProps {
-  data: MonthlyGoalData;
-}
-
-export const GoalSlide: React.FC<GoalSlideProps> = ({ data }) => {
-  return (
-    <div className="flex flex-col items-center justify-center h-full max-w-4xl mx-auto py-6 text-center">
-      {/* Title */}
-      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 mb-4 sm:mb-6 tracking-tight">
-        Meta comercial de {data.monthName}
-      </h2>
-
-      {/* Hero Percentage (>80px required by TV specs, here 120-140px on TV, responsive on mobile) */}
-      <div className="text-6xl sm:text-8xl md:text-9xl lg:text-[140px] font-black text-slate-900 tracking-tighter leading-none my-1 sm:my-2 drop-shadow-sm">
-        {data.progressPercentage}%
-      </div>
-
-      {/* Milestone Reached Badge */}
-      <div className="mt-3 mb-2 sm:mt-4 sm:mb-3 inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-1.5 sm:py-2 rounded-full bg-emerald-100/90 border border-emerald-300 text-emerald-800 font-extrabold text-base sm:text-xl md:text-2xl shadow-sm">
-        <Check className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
-        <span>{data.currentMilestone}</span>
-      </div>
-
-      {/* Next Milestone Target */}
-      <p className="text-lg sm:text-2xl md:text-3xl font-semibold text-slate-600 mb-8 sm:mb-12">
-        {data.nextMilestone}
-      </p>
-
-      {/* Milestone Progress Bar Track */}
-      <div className="w-full relative px-2 sm:px-6 mt-2 sm:mt-4">
-        {/* Background track line */}
-        <div className="w-full h-3 sm:h-4 bg-slate-200 rounded-full relative overflow-hidden">
-          {/* Filled magenta progress */}
-          <div
-            className="h-full bg-[#E6007E] transition-all duration-700 ease-out rounded-full shadow-[0_0_12px_#E6007E]"
-            style={{ width: `${data.progressPercentage}%` }}
-          />
-        </div>
-
-        {/* Milestone checkpoints overlaid */}
-        <div className="flex justify-between items-center -mt-5 sm:-mt-6 relative z-10">
-          {data.milestones.map((m) => {
-            const isCompleted = m.reached;
-
-            return (
-              <div key={m.level} className="flex flex-col items-center">
-                <div
-                  className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-[10px] sm:text-xs border-2 transition-all shadow-md ${
-                    isCompleted
-                      ? 'bg-white text-[#E6007E] border-[#E6007E]'
-                      : 'bg-white text-slate-400 border-slate-300'
-                  }`}
-                >
-                  {isCompleted ? (
-                    <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
-                  ) : (
-                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-slate-400" />
-                  )}
-                </div>
-
-                <span
-                  className={`text-xs sm:text-base md:text-xl font-bold mt-2 sm:mt-3 ${
-                    isCompleted ? 'text-[#E6007E]' : 'text-slate-600'
-                  }`}
-                >
-                  {m.label}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
+const milestoneColors = {
+  bronce: 'text-amber-800',
+  plata: 'text-slate-600',
+  oro: 'text-amber-700',
+  meta: 'text-emerald-800',
 };
+
+export function GoalSlide({ data }: { data: MonthlyGoalData }) {
+  const progress = Math.min(100, Math.max(0, data.progressPercentage));
+  return (
+    <section className="flex w-full max-w-6xl flex-col items-center justify-center self-center px-5 py-4 text-center sm:px-12 xl:py-8">
+      <h2 className="text-2xl font-extrabold xl:text-4xl">Meta comercial de {data.monthName}</h2>
+      <strong className="my-2 text-7xl leading-none tracking-tight md:text-[108px] xl:my-3 xl:text-[140px]">
+        {progress}%
+      </strong>
+      <p className="mt-3 w-full max-w-[280px] rounded-md bg-emerald-50 px-4 py-1 text-sm font-semibold text-emerald-800 xl:text-xl">
+        {data.currentMilestone}
+      </p>
+      <p className="mt-2 text-lg text-slate-600 xl:text-2xl">{data.nextMilestone}</p>
+      <div className="relative mt-10 mb-8 w-[90%] rounded-full bg-slate-200 xl:mt-12">
+        <div className="h-3.5 rounded-full bg-[#E6007E] xl:h-4" style={{ width: `${progress}%` }} />
+        {data.milestones.map((milestone) => (
+          <div
+            key={milestone.level}
+            className={`absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white ${milestoneColors[milestone.level]}`}
+            style={{ left: `${milestone.percentage}%` }}
+          >
+            <span
+              className="grid h-4 w-4 place-items-center rounded-full border border-current xl:h-6 xl:w-6"
+              aria-label={milestone.reached ? 'Alcanzado' : 'Pendiente'}
+            >
+              {milestone.reached ? (
+                <Check className="h-3 w-3 xl:h-4 xl:w-4" />
+              ) : (
+                <span className="h-1 w-1 rounded-full bg-current" />
+              )}
+            </span>
+            <span className="absolute top-full left-1/2 mt-1.5 -translate-x-1/2 whitespace-nowrap text-xs font-bold xl:text-lg">
+              {milestone.label}
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}

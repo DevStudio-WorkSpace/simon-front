@@ -6,20 +6,6 @@ export const mockPunctuality: PunctualityData = {
   tardinessCountToday: 2,
   totalTardinessMinutes: 47,
   anonymousTardinessBadge: 2,
-  lateArrivalsList: [
-    {
-      id: 'late-1',
-      technicianName: 'Pedro Quispe (Técnico Nivel 1)',
-      arrivalTime: '09:18',
-      minutesLate: 13,
-    },
-    {
-      id: 'late-2',
-      technicianName: 'Lucas Morales (Técnico Nivel 2)',
-      arrivalTime: '09:39',
-      minutesLate: 34,
-    },
-  ],
   onTimeList: [
     { position: 1, technicianName: 'Billy', arrivalTime: '8:41' },
     { position: 2, technicianName: 'York', arrivalTime: '8:47' },

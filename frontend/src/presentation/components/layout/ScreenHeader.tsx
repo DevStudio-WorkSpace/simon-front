@@ -48,7 +48,9 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({ title }) => {
               aria-hidden="true"
               className={`h-2 w-2 rounded-full sm:h-2.5 sm:w-2.5 ${isPaused ? 'bg-amber-500' : 'bg-emerald-500'}`}
             />
-            <span className="sr-only">{playbackStatus}</span>
+            <span className="ml-1.5 text-[11px] font-semibold text-slate-700 xl:text-base">
+              {playbackStatus}
+            </span>
           </span>
 
           {/* Slide counter n/6 */}

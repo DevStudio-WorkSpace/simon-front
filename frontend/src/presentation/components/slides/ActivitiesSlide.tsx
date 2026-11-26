@@ -20,72 +20,84 @@ const activityStateMap: Record<ActivityState, { label: string; variant: BadgeVar
 
 export const ActivitiesSlide: React.FC<ActivitiesSlideProps> = ({ data }) => {
   return (
-    <div className="flex flex-col justify-between h-full gap-4 py-2">
+    <div className="flex w-full flex-col gap-2.5 xl:gap-4">
       {/* Subtitle / Header row */}
-      <div className="border-b border-slate-200 pb-2">
-        <h2 className="text-2xl md:text-3xl font-black text-slate-900">
+      <div className="pb-1">
+        <h2 className="text-lg xl:text-3xl font-black text-slate-900">
           Qué avanzar cuando estás disponible
         </h2>
-        <span className="text-sm md:text-base text-slate-500">
+        <span className="text-xs xl:text-base text-slate-600">
           Ejemplo ilustrativo · coordinación organiza, cada técnico registra su avance
         </span>
       </div>
 
       {/* 3 KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-4">
-        <KpiCard number={data.inProgressCount} label="en curso" variant="scheduled" />
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 xl:gap-4">
+        <KpiCard compact number={data.inProgressCount} label="en curso" variant="scheduled" />
         <KpiCard
+          compact
           number={data.pausedByServiceCount}
           label="pausada por servicio"
           variant="waiting"
         />
-        <KpiCard number={data.readyForReviewCount} label="lista para revisión" variant="success" />
+        <KpiCard
+          compact
+          number={data.readyForReviewCount}
+          label="lista para revisión"
+          variant="success"
+        />
       </div>
 
       {/* Activities Table */}
-      <div className="glass-panel neumorph-shadow rounded-2xl overflow-hidden flex-1 flex flex-col justify-between border border-slate-200/80">
+      <div className="flex flex-col gap-2 overflow-hidden">
         <div className="overflow-x-auto w-full">
-          <table className="min-w-[580px] lg:min-w-full text-left border-collapse">
+          <table className="w-full min-w-[580px] table-fixed border-separate border-spacing-y-1 text-left [&_td]:px-2 [&_td]:py-2.5 [&_th]:px-2 xl:[&_td]:px-4 xl:[&_td]:py-3 xl:[&_th]:px-4">
+            <colgroup>
+              <col className="w-[13%]" />
+              <col className="w-[32%]" />
+              <col className="w-[23%]" />
+              <col className="w-[32%]" />
+            </colgroup>
             <thead>
-              <tr className="border-b border-slate-200 text-slate-500 text-xs sm:text-sm md:text-base uppercase tracking-wider font-bold">
-                <th className="py-2.5 sm:py-3 px-3 sm:px-6">Técnico</th>
-                <th className="py-2.5 sm:py-3 px-3 sm:px-6">Actividad interna</th>
-                <th className="py-2.5 sm:py-3 px-3 sm:px-6">Estado</th>
-                <th className="py-2.5 sm:py-3 px-3 sm:px-6">Siguiente paso</th>
+              <tr className="border-b border-slate-200 text-slate-500 text-xs xl:text-lg font-bold">
+                <th>Técnico</th>
+                <th>Actividad interna</th>
+                <th>Estado</th>
+                <th>Siguiente paso</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-slate-800 text-sm sm:text-base md:text-lg">
-              {data.activities.map((item) => {
-                const stateConfig = activityStateMap[item.state] || {
-                  label: item.state,
-                  variant: 'neutral' as BadgeVariant,
-                };
+            <tbody className="text-sm leading-tight text-slate-800 xl:text-lg">
+              {data.activities
+                .filter((item) => item.state !== 'validada')
+                .map((item) => {
+                  const stateConfig = activityStateMap[item.state] || {
+                    label: item.state,
+                    variant: 'neutral' as BadgeVariant,
+                  };
 
-                return (
-                  <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="py-2.5 sm:py-3 px-3 sm:px-6 font-black text-slate-900">
-                      {item.technicianName}
-                    </td>
-                    <td className="py-2.5 sm:py-3 px-3 sm:px-6 font-semibold text-slate-800">
-                      {item.activityTitle}
-                    </td>
-                    <td className="py-2.5 sm:py-3 px-3 sm:px-6">
-                      <Badge variant={stateConfig.variant} size="sm">
-                        {stateConfig.label}
-                      </Badge>
-                    </td>
-                    <td className="py-2.5 sm:py-3 px-3 sm:px-6 text-slate-600 font-medium">
-                      {item.nextStep}
-                    </td>
-                  </tr>
-                );
-              })}
+                  return (
+                    <tr key={item.id} className="bg-slate-100/80">
+                      <td className="font-black text-slate-900">{item.technicianName}</td>
+                      <td className="font-semibold text-slate-800">{item.activityTitle}</td>
+                      <td>
+                        <Badge
+                          variant={stateConfig.variant}
+                          size="sm"
+                          className="!border-0 !bg-transparent !px-0 !leading-tight"
+                        >
+                          {stateConfig.label}
+                        </Badge>
+                      </td>
+                      <td className="text-slate-600 font-medium">{item.nextStep}</td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
 
         {/* Bottom Banner for Available Activity */}
-        <div className="p-3 sm:p-4 px-4 sm:px-6 bg-pink-50/70 border-t border-pink-200/60 text-sm sm:text-base md:text-lg">
+        <div className="rounded-md bg-pink-50 px-3 py-2 text-sm xl:px-4 xl:py-3 xl:text-xl">
           <span className="font-extrabold text-[#E6007E]">Disponible para tomar:</span>{' '}
           <span className="font-semibold text-slate-800">{data.availableToTake.title}</span>{' '}
           <span className="text-slate-500">· {data.availableToTake.requirement}</span>
@@ -93,7 +105,7 @@ export const ActivitiesSlide: React.FC<ActivitiesSlideProps> = ({ data }) => {
       </div>
 
       {/* Footnote */}
-      <div className="text-xs md:text-sm text-slate-500 px-2">
+      <div className="px-1 text-xs text-slate-600 xl:text-base">
         Datos de ejemplo · La bitácora detallada se consulta en el sistema.
       </div>
     </div>

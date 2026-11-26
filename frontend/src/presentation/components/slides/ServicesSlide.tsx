@@ -14,6 +14,7 @@ import { MapPin, Monitor, Wrench } from 'lucide-react';
 interface ServicesSlideProps {
   metrics: ServicesMetrics;
   services: ServiceItem[];
+  progressPercent: number;
 }
 
 const stateVariantMap: Record<ServiceState, { label: string; variant: BadgeVariant }> = {
@@ -30,7 +31,27 @@ const modalityIcons: Record<ServiceModality, React.ReactNode> = {
   taller: <Wrench className="mr-1 h-3.5 w-3.5 shrink-0 text-slate-500 xl:h-5 xl:w-5" />,
 };
 
-export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services }) => {
+const pageSize = 9;
+
+export const ServicesSlide: React.FC<ServicesSlideProps> = ({
+  metrics,
+  services,
+  progressPercent,
+}) => {
+  const ordered = React.useMemo(
+    () =>
+      [...services].sort((a, b) => {
+        const group = (item: ServiceItem) =>
+          item.state === 'terminado' ? 2 : item.priority === 'urgente' ? 0 : 1;
+        return (
+          group(a) - group(b) || a.time.padStart(5, '0').localeCompare(b.time.padStart(5, '0'))
+        );
+      }),
+    [services],
+  );
+  const pages = Math.max(1, Math.ceil(ordered.length / pageSize));
+  const page = Math.min(pages - 1, Math.floor((Math.max(0, progressPercent) / 100) * pages));
+  const rows = ordered.slice(page * pageSize, (page + 1) * pageSize);
   return (
     <div className="flex w-full flex-col gap-2.5 xl:gap-4">
       {/* 5 Top KPI Cards */}
@@ -85,7 +106,7 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services 
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs leading-tight text-slate-800 xl:text-lg">
-              {services.map((item) => {
+              {rows.map((item) => {
                 const isUrgent = item.priority === 'urgente';
                 const stateConfig = stateVariantMap[item.state] || {
                   label: item.state,
@@ -127,12 +148,21 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services 
                         size="sm"
                         className="w-full justify-center !border-0 !px-1 !py-0.5 !text-[11px] !leading-tight xl:!text-base"
                       >
-                        {stateConfig.label}
+                        {item.state === 'espera_repuesto'
+                          ? item.waitReason || stateConfig.label
+                          : stateConfig.label}
                       </Badge>
                     </td>
                   </tr>
                 );
               })}
+              {rows.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="text-center text-slate-600">
+                    No hay servicios para mostrar.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -154,7 +184,9 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({ metrics, services 
               </span>
             </div>
           </div>
-          <span className="font-semibold text-slate-600 self-end sm:self-auto">Página 1/1</span>
+          <span className="font-semibold text-slate-600 self-end sm:self-auto">
+            Página {page + 1}/{pages}
+          </span>
         </div>
       </div>
     </div>
