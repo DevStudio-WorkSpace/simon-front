@@ -12,16 +12,21 @@ describe('BackgroundPlaylist', () => {
     expect(src).toContain('autoplay=1');
     expect(src).toContain('loop=1');
     expect(src).toContain('playsinline=1');
+    expect(src).toContain('mute=1');
     expect(container.querySelector('input')).toBeNull();
   });
 
-  it('sigue oculto y único después de usar el control remoto', () => {
+  it('activa el sonido con la primera tecla y sigue oculta y única', () => {
     const { container } = render(<BackgroundPlaylist />);
+
+    const silent = container.querySelector('iframe') as HTMLIFrameElement;
+    expect(silent.getAttribute('src')).toContain('mute=1');
 
     fireEvent.keyDown(window, { key: 'ArrowRight' });
 
-    const iframe = container.querySelector('iframe') as HTMLIFrameElement;
-    expect(iframe.className).toContain('opacity-0');
+    const audible = container.querySelector('iframe') as HTMLIFrameElement;
+    expect(audible.getAttribute('src')).toContain('mute=0');
+    expect(audible.className).toContain('opacity-0');
     expect(container.querySelectorAll('iframe')).toHaveLength(1);
   });
 });
