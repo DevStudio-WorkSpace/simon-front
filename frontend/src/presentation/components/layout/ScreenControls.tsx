@@ -2,11 +2,13 @@
 
 import React, { useState } from 'react';
 import { useScreenPlayerStore } from '../../../application/store/screenPlayerStore';
-import { ChevronLeft, ChevronRight, Play, Pause, SlidersHorizontal } from 'lucide-react';
+import { useThemeStore } from '../../../application/store/themeStore';
+import { ChevronLeft, ChevronRight, Play, Pause, SlidersHorizontal, Sun, Moon } from 'lucide-react';
 
 export const ScreenControls: React.FC = () => {
   const { currentSlide, isPaused, nextSlide, prevSlide, togglePause, goToSlide, getActiveViews } =
     useScreenPlayerStore();
+  const { resolvedTheme, toggleTheme } = useThemeStore();
   const [isOpen, setIsOpen] = useState(false);
   const activeViews = getActiveViews();
 
@@ -19,7 +21,7 @@ export const ScreenControls: React.FC = () => {
               Control Remoto / Botonera
             </span>
             <span className="text-xs text-slate-500 dark:text-slate-400">
-              Atajos: ◄, ►, Espacio, 1-6
+              Atajos: ◄, ►, Espacio, 1-6, T (tema)
             </span>
           </div>
 
@@ -56,6 +58,26 @@ export const ScreenControls: React.FC = () => {
               aria-label="Diapositiva siguiente"
             >
               <ChevronRight className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* Theme toggle (remote: T or red button) */}
+          <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200 dark:border-slate-800">
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
+              Modo {resolvedTheme === 'dark' ? 'oscuro' : 'claro'}
+            </span>
+            <button
+              onClick={toggleTheme}
+              className="flex items-center gap-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 px-2.5 py-1.5 text-xs font-bold transition-colors"
+              title="Cambiar tema (T o botón rojo del control)"
+              aria-label="Cambiar tema desde el control"
+            >
+              {resolvedTheme === 'dark' ? (
+                <Sun className="w-4 h-4" />
+              ) : (
+                <Moon className="w-4 h-4" />
+              )}
+              Cambiar tema
             </button>
           </div>
 

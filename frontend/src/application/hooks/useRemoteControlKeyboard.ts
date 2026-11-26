@@ -2,15 +2,31 @@
 
 import { useEffect } from 'react';
 import { useScreenPlayerStore } from '../store/screenPlayerStore';
+import { useThemeStore } from '../store/themeStore';
 
 export function useRemoteControlKeyboard() {
   const { nextSlide, prevSlide, togglePause, goToSlide } = useScreenPlayerStore();
+  const { toggleTheme } = useThemeStore();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Don't intercept if user is typing in an input or textarea
-      const target = event.target as HTMLElement;
-      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+      const target = event.target;
+
+      // Don't steal keys while the user is typing
+      if (
+        target instanceof HTMLElement &&
+        (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)
+      ) {
+        return;
+      }
+
+      // OK/Enter or Space on a focused button must activate that button only.
+      // Otherwise the global action and the button's onClick both run.
+      if (
+        (event.key === 'Enter' || event.key === ' ') &&
+        target instanceof Element &&
+        target.closest('button, a, [role="button"]')
+      ) {
         return;
       }
 
@@ -32,8 +48,18 @@ export function useRemoteControlKeyboard() {
         case 'b':
         case 'B':
         case '.':
+        case 'MediaPlayPause': // dedicated play/pause key on TV remotes
           event.preventDefault();
           togglePause();
+          break;
+
+        // Theme: "T" in the simulator, red colour button on TV remotes
+        case 't':
+        case 'T':
+        case 'F1':
+        case 'ColorF0Red':
+          event.preventDefault();
+          toggleTheme();
           break;
 
         // Number keys 1-6 for quick testing
@@ -56,5 +82,5 @@ export function useRemoteControlKeyboard() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [nextSlide, prevSlide, togglePause, goToSlide]);
+  }, [nextSlide, prevSlide, togglePause, goToSlide, toggleTheme]);
 }
