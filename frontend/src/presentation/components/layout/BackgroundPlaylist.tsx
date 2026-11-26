@@ -5,7 +5,10 @@ import React, { useEffect, useRef, useState } from 'react';
 // Playlist fija de SIMON: se reproduce sola, sin pedir link al usuario.
 const PLAYLIST_URL = 'https://youtube.com/playlist?list=PLA-LqkMtzdc4&si=ic4ErnniAkBptMqE';
 const PLAYLIST_ID = new URL(PLAYLIST_URL).searchParams.get('list') ?? '';
-const VOLUME = 40;
+const VOLUME = 60;
+const AUTO_UNMUTE_DELAY_MS = 1200;
+const PLAY_RETRY_MS = 1000;
+const MAX_PLAY_RETRIES = 60;
 
 type YTPlayer = {
   mute(): void;
@@ -13,6 +16,7 @@ type YTPlayer = {
   setVolume(volume: number): void;
   playVideo(): void;
   setLoop(loop: boolean): void;
+  getPlayerState(): number;
   destroy(): void;
 };
 
@@ -50,8 +54,10 @@ const buildEmbedUrl = (): string => {
     playsinline: '1',
     disablekb: '1',
     rel: '0',
+    fs: '0',
     enablejsapi: '1',
     origin: window.location.origin,
+    widget_referrer: window.location.href,
   }).toString();
   return url.toString();
 };
@@ -63,6 +69,7 @@ export const BackgroundPlaylist: React.FC = () => {
   const playerRef = useRef<YTPlayer | null>(null);
   const readyRef = useRef(false);
   const interactedRef = useRef(false);
+  const autoUnmuteRef = useRef(false);
   const mountedRef = useRef(true);
   const [src, setSrc] = useState('');
 
@@ -76,6 +83,10 @@ export const BackgroundPlaylist: React.FC = () => {
     const iframe = iframeRef.current;
     if (!iframe) return;
 
+    let unmuteTimer: ReturnType<typeof setTimeout> | null = null;
+    let retryTimer: ReturnType<typeof setInterval> | null = null;
+    let retries = 0;
+
     const unmute = () => {
       const player = playerRef.current;
       if (!player || !readyRef.current) return;
@@ -84,8 +95,21 @@ export const BackgroundPlaylist: React.FC = () => {
       player.playVideo();
     };
 
+    const keepPlaying = () => {
+      const player = playerRef.current;
+      if (!player || !readyRef.current) return;
+      if (player.getPlayerState() !== 1) player.playVideo();
+      if (interactedRef.current || autoUnmuteRef.current) unmute();
+      retries += 1;
+      if (retries >= MAX_PLAY_RETRIES && retryTimer) {
+        clearInterval(retryTimer);
+        retryTimer = null;
+      }
+    };
+
     const onFirstInteraction = () => {
       interactedRef.current = true;
+      autoUnmuteRef.current = true;
       unmute();
       INTERACTION_EVENTS.forEach((event) => window.removeEventListener(event, onFirstInteraction));
     };
@@ -100,13 +124,22 @@ export const BackgroundPlaylist: React.FC = () => {
             event.target.mute();
             event.target.setVolume(VOLUME);
             event.target.playVideo();
+
+            // En kiosco no siempre llega una tecla: se intenta activar el sonido
+            // automáticamente y se reintentan play/unmute si el navegador frena.
+            unmuteTimer = setTimeout(() => {
+              autoUnmuteRef.current = true;
+              unmute();
+            }, AUTO_UNMUTE_DELAY_MS);
+            retryTimer = setInterval(keepPlaying, PLAY_RETRY_MS);
+
             if (interactedRef.current) unmute();
           },
           onError: () => {
             // Sin música la TV sigue funcionando.
           },
           onAutoplayBlocked: () => {
-            // Se espera la primera interacción del control.
+            // Los reintentos y la primera interacción lo vuelven a intentar.
           },
         },
       });
@@ -134,6 +167,8 @@ export const BackgroundPlaylist: React.FC = () => {
     return () => {
       mountedRef.current = false;
       INTERACTION_EVENTS.forEach((event) => window.removeEventListener(event, onFirstInteraction));
+      if (unmuteTimer) clearTimeout(unmuteTimer);
+      if (retryTimer) clearInterval(retryTimer);
       playerRef.current?.destroy();
       playerRef.current = null;
       readyRef.current = false;
@@ -146,8 +181,9 @@ export const BackgroundPlaylist: React.FC = () => {
       src={src || undefined}
       title="Música de fondo"
       aria-hidden="true"
+      referrerPolicy="origin"
       className="pointer-events-none fixed left-0 top-0 -z-10 h-[270px] w-[480px] opacity-0"
-      allow="autoplay; encrypted-media; picture-in-picture"
+      allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
     />
   );
 };

@@ -8,6 +8,7 @@ type FakePlayer = {
   setVolume: ReturnType<typeof vi.fn>;
   playVideo: ReturnType<typeof vi.fn>;
   setLoop: ReturnType<typeof vi.fn>;
+  getPlayerState: ReturnType<typeof vi.fn>;
   destroy: ReturnType<typeof vi.fn>;
 };
 
@@ -21,6 +22,7 @@ describe('BackgroundPlaylist', () => {
       setVolume: vi.fn(),
       playVideo: vi.fn(),
       setLoop: vi.fn(),
+      getPlayerState: vi.fn(() => 1),
       destroy: vi.fn(),
     };
 
@@ -54,6 +56,8 @@ describe('BackgroundPlaylist', () => {
     expect(iframe.className).toContain('opacity-0');
     expect(iframe.className).toContain('w-[480px]');
     expect(iframe.className).toContain('h-[270px]');
+    expect(iframe.getAttribute('referrerpolicy')).toBe('origin');
+    expect(iframe.getAttribute('allow')).toContain('autoplay');
     expect(player.setLoop).toHaveBeenCalledWith(true);
     expect(player.mute).toHaveBeenCalled();
     expect(player.playVideo).toHaveBeenCalled();
@@ -69,7 +73,7 @@ describe('BackgroundPlaylist', () => {
     fireEvent.keyDown(window, { key: 'ArrowRight' });
 
     expect(player.unMute).toHaveBeenCalledTimes(1);
-    expect(player.setVolume).toHaveBeenCalledWith(40);
+    expect(player.setVolume).toHaveBeenCalledWith(60);
     expect(player.playVideo).toHaveBeenCalledTimes(2);
   });
 });
