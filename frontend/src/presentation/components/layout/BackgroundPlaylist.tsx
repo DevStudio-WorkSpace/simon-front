@@ -1,14 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 // Playlist fija de SIMON: se reproduce sola, sin pedir link al usuario.
 const PLAYLIST_URL = 'https://youtube.com/playlist?list=PLA-LqkMtzdc4&si=ic4ErnniAkBptMqE';
 const PLAYLIST_ID = new URL(PLAYLIST_URL).searchParams.get('list') ?? '';
-
-// YouTube exige un viewport mínimo de 200x200 px. Se oculta fuera de pantalla.
-const PLAYER_WIDTH = 480;
-const PLAYER_HEIGHT = 270;
 const VOLUME = 40;
 
 type YTPlayer = {
@@ -26,9 +22,6 @@ type YTNamespace = {
   Player: new (
     target: HTMLElement,
     options: {
-      width: number;
-      height: number;
-      playerVars: Record<string, string | number>;
       events: {
         onReady: (event: YTPlayerEvent) => void;
         onError?: (event: { data: number }) => void;
@@ -45,17 +38,43 @@ declare global {
   }
 }
 
+const buildEmbedUrl = (): string => {
+  const url = new URL('https://www.youtube.com/embed');
+  url.search = new URLSearchParams({
+    listType: 'playlist',
+    list: PLAYLIST_ID,
+    autoplay: '1',
+    controls: '0',
+    loop: '1',
+    playlist: PLAYLIST_ID,
+    playsinline: '1',
+    disablekb: '1',
+    rel: '0',
+    enablejsapi: '1',
+    origin: window.location.origin,
+  }).toString();
+  return url.toString();
+};
+
+const INTERACTION_EVENTS = ['keydown', 'pointerdown', 'touchstart', 'click'] as const;
+
 export const BackgroundPlaylist: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const playerRef = useRef<YTPlayer | null>(null);
   const readyRef = useRef(false);
   const interactedRef = useRef(false);
   const mountedRef = useRef(true);
+  const [src, setSrc] = useState('');
 
   useEffect(() => {
+    setSrc(buildEmbedUrl());
+  }, []);
+
+  useEffect(() => {
+    if (!src) return;
     mountedRef.current = true;
-    const container = containerRef.current;
-    if (!container) return;
+    const iframe = iframeRef.current;
+    if (!iframe) return;
 
     const unmute = () => {
       const player = playerRef.current;
@@ -68,28 +87,12 @@ export const BackgroundPlaylist: React.FC = () => {
     const onFirstInteraction = () => {
       interactedRef.current = true;
       unmute();
-      window.removeEventListener('keydown', onFirstInteraction);
-      window.removeEventListener('pointerdown', onFirstInteraction);
+      INTERACTION_EVENTS.forEach((event) => window.removeEventListener(event, onFirstInteraction));
     };
 
     const createPlayer = () => {
       if (!mountedRef.current || playerRef.current || !window.YT?.Player) return;
-      playerRef.current = new window.YT.Player(container, {
-        width: PLAYER_WIDTH,
-        height: PLAYER_HEIGHT,
-        playerVars: {
-          listType: 'playlist',
-          list: PLAYLIST_ID,
-          autoplay: 1,
-          controls: 0,
-          loop: 1,
-          playlist: PLAYLIST_ID,
-          playsinline: 1,
-          disablekb: 1,
-          rel: 0,
-          enablejsapi: 1,
-          origin: window.location.origin,
-        },
+      playerRef.current = new window.YT.Player(iframe, {
         events: {
           onReady: (event) => {
             readyRef.current = true;
@@ -100,17 +103,16 @@ export const BackgroundPlaylist: React.FC = () => {
             if (interactedRef.current) unmute();
           },
           onError: () => {
-            // Sin música la TV sigue funcionando: no se muestra ningún error.
+            // Sin música la TV sigue funcionando.
           },
           onAutoplayBlocked: () => {
-            // Se espera a la primera tecla del control para activar el sonido.
+            // Se espera la primera interacción del control.
           },
         },
       });
     };
 
-    window.addEventListener('keydown', onFirstInteraction);
-    window.addEventListener('pointerdown', onFirstInteraction);
+    INTERACTION_EVENTS.forEach((event) => window.addEventListener(event, onFirstInteraction));
 
     if (window.YT?.Player) {
       createPlayer();
@@ -131,19 +133,21 @@ export const BackgroundPlaylist: React.FC = () => {
 
     return () => {
       mountedRef.current = false;
-      window.removeEventListener('keydown', onFirstInteraction);
-      window.removeEventListener('pointerdown', onFirstInteraction);
+      INTERACTION_EVENTS.forEach((event) => window.removeEventListener(event, onFirstInteraction));
       playerRef.current?.destroy();
       playerRef.current = null;
       readyRef.current = false;
     };
-  }, []);
+  }, [src]);
 
   return (
-    <div
-      ref={containerRef}
+    <iframe
+      ref={iframeRef}
+      src={src || undefined}
+      title="Música de fondo"
       aria-hidden="true"
-      className="pointer-events-none fixed -left-[9999px] top-0 h-[270px] w-[480px] opacity-0"
+      className="pointer-events-none fixed left-0 top-0 -z-10 h-[270px] w-[480px] opacity-0"
+      allow="autoplay; encrypted-media; picture-in-picture"
     />
   );
 };

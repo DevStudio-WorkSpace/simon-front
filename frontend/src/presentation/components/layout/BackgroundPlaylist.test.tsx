@@ -13,7 +13,6 @@ type FakePlayer = {
 
 describe('BackgroundPlaylist', () => {
   let player: FakePlayer;
-  let playerVars: Record<string, string | number>;
 
   beforeEach(() => {
     player = {
@@ -28,36 +27,33 @@ describe('BackgroundPlaylist', () => {
     Object.defineProperty(window, 'YT', {
       configurable: true,
       value: {
-        Player: vi.fn().mockImplementation(
-          (
-            _target: HTMLElement,
-            options: {
-              playerVars: Record<string, string | number>;
-              events: { onReady: (event: { target: FakePlayer }) => void };
+        Player: vi
+          .fn()
+          .mockImplementation(
+            (
+              _iframe: HTMLElement,
+              options: { events: { onReady: (event: { target: FakePlayer }) => void } },
+            ) => {
+              options.events.onReady({ target: player });
+              return player;
             },
-          ) => {
-            playerVars = options.playerVars;
-            options.events.onReady({ target: player });
-            return player;
-          },
-        ),
+          ),
       },
     });
   });
 
   it('usa la playlist fija, oculta y con bucle', () => {
     const { container } = render(<BackgroundPlaylist />);
-    const holder = container.firstElementChild as HTMLElement;
+    const iframe = container.querySelector('iframe') as HTMLIFrameElement;
+    const src = iframe.getAttribute('src') ?? '';
 
-    expect(holder.className).toContain('opacity-0');
-    expect(holder.className).toContain('w-[480px]');
-    expect(holder.className).toContain('h-[270px]');
-    expect(playerVars).toMatchObject({
-      listType: 'playlist',
-      list: 'PLA-LqkMtzdc4',
-      loop: 1,
-      autoplay: 1,
-    });
+    expect(src).toContain('list=PLA-LqkMtzdc4');
+    expect(src).toContain('autoplay=1');
+    expect(src).toContain('loop=1');
+    expect(src).toContain('enablejsapi=1');
+    expect(iframe.className).toContain('opacity-0');
+    expect(iframe.className).toContain('w-[480px]');
+    expect(iframe.className).toContain('h-[270px]');
     expect(player.setLoop).toHaveBeenCalledWith(true);
     expect(player.mute).toHaveBeenCalled();
     expect(player.playVideo).toHaveBeenCalled();
