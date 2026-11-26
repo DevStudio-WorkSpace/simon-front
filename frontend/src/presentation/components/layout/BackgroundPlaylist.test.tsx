@@ -54,7 +54,7 @@ describe('BackgroundPlaylist', () => {
     expect(holder.className).toContain('h-[270px]');
     expect(playerVars).toMatchObject({
       listType: 'playlist',
-      list: 'PLaUiCYWlUUe6jEXKvewDnrj0F9Rc9Qzir',
+      list: 'PLA-LqkMtzdc4',
       loop: 1,
       autoplay: 1,
     });

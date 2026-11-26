@@ -3,8 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 
 // Playlist fija de SIMON: se reproduce sola, sin pedir link al usuario.
-const PLAYLIST_URL =
-  'https://youtube.com/playlist?list=PLaUiCYWlUUe6jEXKvewDnrj0F9Rc9Qzir&si=_0qTsOPCE2z_akwm';
+const PLAYLIST_URL = 'https://youtube.com/playlist?list=PLA-LqkMtzdc4&si=ic4ErnniAkBptMqE';
 const PLAYLIST_ID = new URL(PLAYLIST_URL).searchParams.get('list') ?? '';
 
 // YouTube exige un viewport mínimo de 200x200 px. Se oculta fuera de pantalla.
