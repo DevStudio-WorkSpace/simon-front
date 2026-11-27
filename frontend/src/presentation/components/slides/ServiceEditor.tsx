@@ -256,7 +256,9 @@ export function ServiceEditor({
                 {service.orderNumber}
               </span>
             </h2>
-            {creating && <p className="text-xs font-semibold text-blue-800">Asignación automática</p>}
+            {creating && (
+              <p className="text-xs font-semibold text-blue-800">Asignación automática</p>
+            )}
             <p className="text-xs text-slate-600 xl:text-sm">
               {confirmDelete
                 ? `Se quitará la fila de ${service.clientName} de esta demo.`
@@ -296,10 +298,7 @@ export function ServiceEditor({
           </div>
         ) : (
           <>
-            <fieldset
-              aria-label="Datos del servicio"
-              className="grid grid-cols-2 gap-x-3 gap-y-2"
-            >
+            <fieldset aria-label="Datos del servicio" className="grid grid-cols-2 gap-x-3 gap-y-2">
               {fields.map((field) => {
                 if (!('maxLength' in field)) {
                   const { name, label } = field;

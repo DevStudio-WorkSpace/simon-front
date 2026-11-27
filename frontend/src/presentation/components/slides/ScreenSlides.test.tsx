@@ -149,18 +149,19 @@ describe('Vistas de TV', () => {
       const priority = editor.getByRole('combobox', { name: 'Prioridad' });
       expect(priority).toHaveFocus();
       expect(priority).toHaveValue('urgente');
-      expect(within(priority).getAllByRole('option').map((option) => option.textContent)).toEqual([
-        'Urgente',
-        'Programado',
-      ]);
+      expect(
+        within(priority)
+          .getAllByRole('option')
+          .map((option) => option.textContent),
+      ).toEqual(['Urgente', 'Programado']);
       fireEvent.change(priority, { target: { value: 'programado' } });
       const modality = editor.getByRole('combobox', { name: 'Tipo de cliente' });
       expect(modality).toHaveValue('visita');
-      expect(within(modality).getAllByRole('option').map((option) => option.textContent)).toEqual([
-        'Visita',
-        'Remoto',
-        'Taller',
-      ]);
+      expect(
+        within(modality)
+          .getAllByRole('option')
+          .map((option) => option.textContent),
+      ).toEqual(['Visita', 'Remoto', 'Taller']);
       const client = editor.getByRole('textbox', { name: 'Cliente' }) as HTMLInputElement;
       expect(modality.closest('label')?.nextElementSibling).toBe(client.closest('label'));
       expect(editor.queryByText('N.º de orden')).not.toBeInTheDocument();

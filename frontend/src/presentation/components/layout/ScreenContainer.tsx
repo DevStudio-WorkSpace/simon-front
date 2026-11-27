@@ -44,7 +44,8 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({ children, titl
       const { rotationClock, secondsPerSlide } = useScreenPlayerStore.getState();
       if (rotationClock.startedAt === null) return;
 
-      const remaining = secondsPerSlide * 1000 - getRotationElapsed(rotationClock, performance.now());
+      const remaining =
+        secondsPerSlide * 1000 - getRotationElapsed(rotationClock, performance.now());
       rotationTimer = setTimeout(
         () => {
           tick();

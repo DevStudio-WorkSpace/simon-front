@@ -113,7 +113,10 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
       ...patch,
       secondsPerSlide,
       progressPercent: progress * 100,
-      rotationClock: { elapsedMs: progress * secondsPerSlide * 1000, startedAt: running ? now : null },
+      rotationClock: {
+        elapsedMs: progress * secondsPerSlide * 1000,
+        startedAt: running ? now : null,
+      },
     });
   }
 
