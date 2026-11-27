@@ -99,8 +99,14 @@ describe('Vistas de TV', () => {
       fireEvent.keyDown(window, { key: 'ArrowUp' });
       fireEvent.keyDown(window, { key: 'ArrowUp' });
       expect(useScreenPlayerStore.getState().isEditingServices).toBe(false);
+      const playbackFocus = document.activeElement;
+      expect(fireEvent.keyDown(window, { key: 'ArrowUp' })).toBe(false);
+      expect(fireEvent.keyDown(window, { key: 'ArrowUp', repeat: true })).toBe(false);
+      expect(document.activeElement).toBe(playbackFocus);
       fireEvent.keyDown(window, { key: 'ArrowRight' });
       expect(nextSlide).toHaveBeenCalledOnce();
+      fireEvent.keyDown(window, { key: 'ArrowDown' });
+      expect(screen.getByRole('button', { name: 'Añadir servicio' })).toHaveFocus();
     } finally {
       unmount();
       useScreenPlayerStore.setState(initial);

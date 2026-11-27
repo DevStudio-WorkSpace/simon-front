@@ -160,6 +160,8 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({
           if (activeRow === 0) setSelectedServiceId(null);
           (rows[activeRow - 1] ?? section).focus();
         }
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
       } else if (event.key === 'ArrowDown' && rows.length) {
         event.preventDefault();
         rows[0].focus();
