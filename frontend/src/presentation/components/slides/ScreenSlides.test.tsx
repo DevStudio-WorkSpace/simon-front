@@ -131,12 +131,39 @@ describe('Vistas de TV', () => {
       />,
     );
     try {
-      expect(screen.getAllByRole('textbox')).toHaveLength(7);
+      expect(screen.getAllByRole('textbox')).toHaveLength(6);
       const editor = within(screen.getByRole('dialog'));
-      expect(editor.getByText('N.º de orden')).toBeInTheDocument();
-      expect(editor.getByText('#0151', { exact: true })).toBeVisible();
-      expect(editor.queryByRole('textbox', { name: 'N.º de orden' })).not.toBeInTheDocument();
-      const client = screen.getByRole('textbox', { name: 'Cliente' }) as HTMLInputElement;
+      const heading = editor.getByRole('heading', { name: 'Editar servicio #0151' });
+      expect(within(heading).getByText('#0151')).toBeVisible();
+      expect(editor.getAllByText('#0151')).toHaveLength(1);
+      const priority = editor.getByRole('combobox', { name: 'Prioridad' });
+      expect(priority).toHaveFocus();
+      expect(priority).toHaveValue('urgente');
+      expect(within(priority).getAllByRole('option').map((option) => option.textContent)).toEqual([
+        'Urgente',
+        'Programado',
+      ]);
+      fireEvent.change(priority, { target: { value: 'programado' } });
+      const modality = editor.getByRole('combobox', { name: 'Tipo de cliente' });
+      expect(modality).toHaveValue('visita');
+      expect(within(modality).getAllByRole('option').map((option) => option.textContent)).toEqual([
+        'Visita',
+        'Remoto',
+        'Taller',
+      ]);
+      const client = editor.getByRole('textbox', { name: 'Cliente' }) as HTMLInputElement;
+      expect(modality.closest('label')?.nextElementSibling).toBe(client.closest('label'));
+      expect(editor.queryByText('N.º de orden')).not.toBeInTheDocument();
+      client.focus();
+      fireEvent.keyDown(window, { key: 'ArrowLeft' });
+      expect(modality).toHaveFocus();
+      const showPicker = vi.fn();
+      Object.defineProperty(modality, 'showPicker', { value: showPicker });
+      fireEvent.keyDown(window, { key: 'Enter' });
+      expect(showPicker).toHaveBeenCalledOnce();
+      fireEvent.change(modality, { target: { value: 'remoto' } });
+      fireEvent.keyDown(window, { key: 'ArrowRight' });
+      expect(client).toHaveFocus();
       expect(client).toHaveAttribute('readonly');
       fireEvent.click(client);
       fireEvent.change(client, { target: { value: 'Cliente demo' } });
@@ -148,6 +175,8 @@ describe('Vistas de TV', () => {
       expect(onSave).toHaveBeenCalledWith({
         ...mockServices[0],
         clientName: 'Cliente demo',
+        priority: 'programado',
+        modality: 'remoto',
         waitReason: undefined,
       });
     } finally {
@@ -187,7 +216,11 @@ describe('Vistas de TV', () => {
       const createEditor = within(screen.getByRole('dialog'));
       expect(createEditor.getByText('#0158', { exact: true })).toBeVisible();
       expect(createEditor.getByText('Asignación automática')).toBeVisible();
-      expect(createEditor.getAllByRole('textbox')).toHaveLength(7);
+      expect(createEditor.getAllByRole('textbox')).toHaveLength(6);
+      expect(createEditor.getByRole('combobox', { name: 'Prioridad' })).toHaveValue('programado');
+      const modality = createEditor.getByRole('combobox', { name: 'Tipo de cliente' });
+      expect(modality).toHaveValue('visita');
+      fireEvent.change(modality, { target: { value: 'taller' } });
       for (const [name, value] of Object.entries({
         Hora: '17:30',
         Técnico: 'Técnico demo',
@@ -212,6 +245,7 @@ describe('Vistas de TV', () => {
       );
 
       fireEvent.click(editNew);
+      expect(screen.getByRole('combobox', { name: 'Tipo de cliente' })).toHaveValue('taller');
       fireEvent.click(screen.getByRole('button', { name: 'Eliminar' }));
       expect(screen.getByRole('button', { name: 'Cancelar' })).toHaveFocus();
       fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
