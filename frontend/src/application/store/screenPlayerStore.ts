@@ -38,6 +38,7 @@ interface ScreenPlayerState {
   currentViewIndex: number; // 0-based index in activeViews
   viewsConfig: SlideViewConfig[];
   isPaused: boolean;
+  isEditingServices: boolean;
   totalSlides: number;
   secondsPerSlide: number;
   progressPercent: number; // 0 to 100
@@ -80,6 +81,7 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
     currentViewIndex: 0,
     viewsConfig: initialViews,
     isPaused: false,
+    isEditingServices: false,
     totalSlides: initialActive.length || 6,
     secondsPerSlide: initialActive[0]?.seconds || 10,
     progressPercent: 0,
@@ -214,8 +216,8 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
     },
 
     tick: () => {
-      const { isPaused, progressPercent } = get();
-      if (isPaused) return;
+      const { isPaused, isEditingServices, progressPercent } = get();
+      if (isPaused || isEditingServices) return;
 
       const currentView = get().getCurrentView();
       const seconds = currentView?.seconds || 10;

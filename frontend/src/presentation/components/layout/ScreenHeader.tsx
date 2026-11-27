@@ -9,12 +9,19 @@ interface ScreenHeaderProps {
 }
 
 export const ScreenHeader: React.FC<ScreenHeaderProps> = ({ title }) => {
-  const { currentSlide, totalSlides, isPaused, progressPercent, getCurrentView } =
-    useScreenPlayerStore();
+  const {
+    currentSlide,
+    totalSlides,
+    isPaused,
+    isEditingServices,
+    progressPercent,
+    getCurrentView,
+  } = useScreenPlayerStore();
   const currentDateTime = useCurrentDateTime();
   const currentView = getCurrentView();
   const displayTitle = currentView?.title || title;
-  const playbackStatus = isPaused ? 'En pausa' : 'Reproduciendo';
+  const paused = isPaused || isEditingServices;
+  const playbackStatus = paused ? 'En pausa' : 'Reproduciendo';
 
   return (
     <header className="relative w-full border-b border-slate-200 bg-white backdrop-blur-md z-20">
@@ -46,7 +53,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({ title }) => {
           <span className="inline-flex items-center" title={playbackStatus}>
             <span
               aria-hidden="true"
-              className={`h-2 w-2 rounded-full sm:h-2.5 sm:w-2.5 ${isPaused ? 'bg-amber-500' : 'bg-emerald-500'}`}
+              className={`h-2 w-2 rounded-full sm:h-2.5 sm:w-2.5 ${paused ? 'bg-amber-500' : 'bg-emerald-500'}`}
             />
             <span className="ml-1.5 text-[11px] font-semibold text-slate-700 xl:text-base">
               {playbackStatus}

@@ -8,6 +8,7 @@ export function useRemoteControlKeyboard() {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || useScreenPlayerStore.getState().isEditingServices) return;
       const target = event.target;
 
       // Don't steal keys while the user is typing
