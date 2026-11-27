@@ -26,8 +26,6 @@ import {
   mockGoal,
   mockPunctuality,
   mockRanking,
-  mockServices,
-  mockServicesMetrics,
   mockTickerItems,
 } from '../mocks';
 import { formatSimonDateTime } from '../../application/hooks/useCurrentDateTime';
@@ -46,6 +44,14 @@ function nowIso(): string {
   return new Date().toISOString();
 }
 
+async function fetchDemoServices(): Promise<ServicesData> {
+  const response = await fetch('/demo/services.json', { cache: 'no-store' });
+  if (!response.ok) throw new Error(`HTTP ${response.status} al cargar servicios de ejemplo`);
+  const data = (await response.json()) as ServicesData;
+  if (!data?.metrics || !Array.isArray(data.items)) throw new Error('Datos de servicios inválidos');
+  return data;
+}
+
 function activeAnnouncement(items: AnnouncementData[]): AnnouncementData {
   return items.find((item) => item.active) ?? items[0] ?? mockAnnouncement;
 }
@@ -54,8 +60,9 @@ export class MockScreenRepository implements IScreenRepository {
   private readonly dataByScreen = new Map<string, ScreenAllData>();
   private readonly listenersByScreen = new Map<string, Set<ScreenStateListener>>();
   private readonly storageListener?: (event: StorageEvent) => void;
+  private readonly serviceSourceVersions = new Map<string, string>();
 
-  constructor() {
+  constructor(private readonly loadServices: () => Promise<ServicesData> = fetchDemoServices) {
     if (typeof window === 'undefined') return;
 
     this.storageListener = (event: StorageEvent) => {
@@ -88,8 +95,14 @@ export class MockScreenRepository implements IScreenRepository {
         connectionStatus: 'connected',
       },
       services: {
-        metrics: clone(mockServicesMetrics),
-        items: clone(mockServices),
+        metrics: {
+          totalToday: 0,
+          urgentCount: 0,
+          inProgressCount: 0,
+          unassignedCount: 0,
+          pendingFollowupCount: 0,
+        },
+        items: [],
       },
       punctuality: clone(mockPunctuality),
       ranking: clone(mockRanking),
@@ -146,6 +159,7 @@ export class MockScreenRepository implements IScreenRepository {
   }
 
   async getAllScreenData(screenCode: string): Promise<ScreenAllData> {
+    await this.getServices(screenCode);
     return this.sanitize(this.getData(screenCode));
   }
 
@@ -158,6 +172,17 @@ export class MockScreenRepository implements IScreenRepository {
   }
 
   async getServices(screenCode: string): Promise<ServicesData> {
+    try {
+      const services = await this.loadServices();
+      const version = JSON.stringify(services);
+      if (this.serviceSourceVersions.get(screenCode) !== version) {
+        const data = this.getData(screenCode);
+        this.serviceSourceVersions.set(screenCode, version);
+        this.dataByScreen.set(screenCode, { ...data, services: clone(services) });
+      }
+    } catch {
+      // Keep the last successful snapshot while the demo file is temporarily unavailable.
+    }
     return this.sanitize(this.getData(screenCode)).services;
   }
 

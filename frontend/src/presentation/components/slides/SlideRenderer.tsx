@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { ServiceItem } from '../../../domain/models';
 import { useScreenPlayerStore } from '../../../application/store/screenPlayerStore';
 import { ServicesSlide } from './ServicesSlide';
@@ -23,6 +23,27 @@ export const SlideRenderer: React.FC = () => {
   const [serviceEdits, setServiceEdits] = useState<Partial<Record<string, ServiceItem>>>({});
   const [deletedServiceIds, setDeletedServiceIds] = useState<ReadonlySet<string>>(new Set());
   const isDemo = process.env.NEXT_PUBLIC_DATA_SOURCE !== 'api';
+  const sourceServices = data?.services.items;
+  const previousServices = useRef(sourceServices);
+
+  useEffect(() => {
+    const previous = previousServices.current;
+    previousServices.current = sourceServices;
+    if (!isDemo || !previous || !sourceServices || sourceServices === previous) return;
+    const currentById = new Map(sourceServices.map((service) => [service.id, service]));
+    const updated = previous.filter(
+      (service) => JSON.stringify(service) !== JSON.stringify(currentById.get(service.id)),
+    );
+    if (!updated.length) return;
+
+    // Leave local demo edits in place until the source changes that same row.
+    setServiceEdits((edits) => {
+      if (!updated.some(({ id }) => id in edits)) return edits;
+      const current = { ...edits };
+      for (const { id } of updated) delete current[id];
+      return current;
+    });
+  }, [isDemo, sourceServices]);
   const editService = isDemo
     ? (service: ServiceItem) => setServiceEdits((edits) => ({ ...edits, [service.id]: service }))
     : undefined;

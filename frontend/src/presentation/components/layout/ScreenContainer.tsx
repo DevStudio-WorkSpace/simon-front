@@ -14,7 +14,8 @@ interface ScreenContainerProps {
 }
 
 export const ScreenContainer: React.FC<ScreenContainerProps> = ({ children, title }) => {
-  const { initialize, tick, data, isLoading, error, getCurrentView } = useScreenPlayerStore();
+  const { initialize, tick, data, isLoading, error, getCurrentView, refreshDemoServices } =
+    useScreenPlayerStore();
 
   const showTicker = getCurrentView()?.tipo !== 'actividades';
 
@@ -24,13 +25,24 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({ children, titl
   useEffect(() => {
     initialize('TV-SALA-01');
 
-    // Interval ticker for screen rotation: 100ms for smooth progress bar
-    const interval = setInterval(() => {
-      tick();
-    }, 100);
+    const rotation = setInterval(tick, 100);
+    let stopped = false;
+    let pollTimer: ReturnType<typeof setTimeout>;
 
-    return () => clearInterval(interval);
-  }, [initialize, tick]);
+    if (process.env.NEXT_PUBLIC_DATA_SOURCE !== 'api') {
+      const poll = async () => {
+        await refreshDemoServices();
+        if (!stopped) pollTimer = setTimeout(poll, 1000);
+      };
+      pollTimer = setTimeout(poll, 1000);
+    }
+
+    return () => {
+      stopped = true;
+      clearInterval(rotation);
+      clearTimeout(pollTimer);
+    };
+  }, [initialize, tick, refreshDemoServices]);
 
   return (
     <>

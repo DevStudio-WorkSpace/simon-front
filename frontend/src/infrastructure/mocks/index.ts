@@ -1,4 +1,3 @@
-export * from './services.mock';
 export * from './punctuality.mock';
 export * from './ranking.mock';
 export * from './goals.mock';

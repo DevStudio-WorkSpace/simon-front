@@ -55,6 +55,7 @@ interface ScreenPlayerState {
   goToViewId: (id: number) => void;
   tick: () => void;
   refreshData: () => Promise<void>;
+  refreshDemoServices: () => Promise<void>;
 
   // Views & Duration Management
   reorderViews: (sourceId: number, targetId: number) => void;
@@ -231,6 +232,16 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
       } else {
         set({ progressPercent: newPercent });
       }
+    },
+
+    refreshDemoServices: async () => {
+      const { screenCode, data } = get();
+      if (!data || process.env.NEXT_PUBLIC_DATA_SOURCE === 'api') return;
+      const services = await screenRepository.getServices(screenCode);
+      const current = get();
+      if (!current.data || current.screenCode !== screenCode) return;
+      if (JSON.stringify(current.data.services) === JSON.stringify(services)) return;
+      set({ data: { ...current.data, services } });
     },
 
     refreshData: async () => {

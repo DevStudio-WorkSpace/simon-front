@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ScreenState, ServiceItem } from '../../domain/models';
 import { MockScreenRepository } from './MockScreenRepository';
+import { mockServices, mockServicesMetrics } from '../mocks/services.mock';
+
+const loadServices = async () => ({ metrics: mockServicesMetrics, items: mockServices });
 
 const flush = () => Promise.resolve();
 
@@ -10,7 +13,7 @@ describe('MockScreenRepository', () => {
   });
 
   it('entrega el contrato completo y oculta servicios cerrados o anulados', async () => {
-    const repository = new MockScreenRepository();
+    const repository = new MockScreenRepository(loadServices);
     const data = await repository.getAllScreenData('TV-1');
 
     expect(data.lastDataAt).toEqual(expect.any(String));
@@ -32,8 +35,30 @@ describe('MockScreenRepository', () => {
     expect(updated.items.map((item) => item.id)).not.toContain('anulado');
   });
 
+  it('recoge el nuevo dato de servicios y conserva la última versión si falla la lectura', async () => {
+    let technician = 'Héctor';
+    let readable = true;
+    const repository = new MockScreenRepository(async () => {
+      if (!readable) throw new Error('Archivo no disponible');
+      return {
+        metrics: mockServicesMetrics,
+        items: [{ ...mockServices[0], technicianName: technician }, ...mockServices.slice(1)],
+      };
+    });
+    const first = await repository.getAllScreenData('TV-1');
+    expect(first.services.items[0].technicianName).toBe('Héctor');
+
+    technician = 'Rodrigo';
+    const second = await repository.getServices('TV-1');
+    expect(second.items[0].technicianName).toBe('Rodrigo');
+
+    readable = false;
+    const retained = await repository.getServices('TV-1');
+    expect(retained.items[0].technicianName).toBe('Rodrigo');
+  });
+
   it('notifica cada cambio de estado y deja de notificar al cancelar', async () => {
-    const repository = new MockScreenRepository();
+    const repository = new MockScreenRepository(loadServices);
     const received: ScreenState[] = [];
     const unsubscribe = repository.subscribeToScreenState('TV-2', (state) => {
       received.push(state);
@@ -53,7 +78,7 @@ describe('MockScreenRepository', () => {
   });
 
   it('aplica actualizaciones del administrador sin recargar la pantalla', async () => {
-    const repository = new MockScreenRepository();
+    const repository = new MockScreenRepository(loadServices);
     const before = await repository.getAllScreenData('TV-3');
     const updated = await repository.updateScreenData('TV-3', {
       goal: { progressPercentage: 82 },
