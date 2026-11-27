@@ -16,7 +16,6 @@ import { MapPin, Monitor, Pencil, Plus, Wrench } from 'lucide-react';
 interface ServicesSlideProps {
   metrics: ServicesMetrics;
   services: ServiceItem[];
-  progressPercent: number;
   serviceEdits?: Partial<Record<string, ServiceItem>>;
   deletedServiceIds?: ReadonlySet<string>;
   onEditService?: (service: ServiceItem) => void;
@@ -66,7 +65,6 @@ function newService(items: (ServiceItem | undefined)[]): ServiceItem {
 export const ServicesSlide: React.FC<ServicesSlideProps> = ({
   metrics,
   services,
-  progressPercent,
   serviceEdits,
   deletedServiceIds,
   onEditService,
@@ -120,7 +118,9 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({
     [items],
   );
   const pages = Math.max(1, Math.ceil(ordered.length / pageSize));
-  const activePage = Math.min(pages - 1, Math.floor((Math.max(0, progressPercent) / 100) * pages));
+  const activePage = useScreenPlayerStore((state) =>
+    Math.min(pages - 1, Math.floor((Math.max(0, state.progressPercent) / 100) * pages)),
+  );
   const selectedIndex =
     editorHasFocus || savedServiceId.current
       ? ordered.findIndex((item) => item.id === selectedServiceId)
@@ -171,7 +171,7 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({
     window.addEventListener('keydown', handleKey, true);
     return () => {
       window.removeEventListener('keydown', handleKey, true);
-      useScreenPlayerStore.setState({ isEditingServices: false });
+      useScreenPlayerStore.getState().setEditingServices(false);
     };
   }, [editorEnabled]);
 
@@ -180,10 +180,7 @@ export const ServicesSlide: React.FC<ServicesSlideProps> = ({
       target instanceof Element &&
       sectionRef.current?.contains(target) &&
       Boolean(target.closest('[data-service-editor]'));
-    const isEditingServices = Boolean(focused);
-    if (isEditingServices !== useScreenPlayerStore.getState().isEditingServices) {
-      useScreenPlayerStore.setState({ isEditingServices });
-    }
+    useScreenPlayerStore.getState().setEditingServices(Boolean(focused));
   };
 
   return (

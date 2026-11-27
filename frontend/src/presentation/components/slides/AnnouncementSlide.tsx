@@ -1,30 +1,35 @@
+import { useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
+import { useScreenPlayerStore } from '../../../application/store/screenPlayerStore';
 import type { AnnouncementData } from '../../../domain/models';
 
 interface AnnouncementSlideProps {
   announcements: AnnouncementData[];
-  progressPercent: number;
-  secondsPerSlide: number;
 }
 
-export function AnnouncementSlide({
-  announcements,
-  progressPercent,
-  secondsPerSlide,
-}: AnnouncementSlideProps) {
-  const active = announcements.filter((announcement) => announcement.active);
-  const elapsed = Math.min(100, Math.max(0, progressPercent)) / 100;
-  const index = Math.min(active.length - 1, Math.floor(elapsed * active.length));
+export function AnnouncementSlide({ announcements }: AnnouncementSlideProps) {
+  const active = useMemo(
+    () => announcements.filter((announcement) => announcement.active),
+    [announcements],
+  );
+  const { index, remaining } = useScreenPlayerStore(
+    useShallow(({ progressPercent, secondsPerSlide }) => {
+      if (!active.length) return { index: -1, remaining: 0 };
+      const elapsed = Math.min(100, Math.max(0, progressPercent)) / 100;
+      const index = Math.min(active.length - 1, Math.floor(elapsed * active.length));
+      const remaining = Math.max(
+        0,
+        Math.ceil(((index + 1) / active.length - elapsed) * secondsPerSlide),
+      );
+      return { index, remaining };
+    }),
+  );
   const announcement = active[index];
   if (!announcement) {
     return (
       <p className="m-auto py-6 text-center text-lg text-slate-600">No hay anuncios vigentes.</p>
     );
   }
-  const remaining = Math.max(
-    0,
-    Math.ceil(((index + 1) / active.length - elapsed) * secondsPerSlide),
-  );
-
   return (
     <article className="mx-auto my-2 flex min-h-[320px] w-full flex-1 flex-col justify-between gap-4 rounded-r-xl border-l-4 border-blue-600 bg-blue-50/90 p-5 sm:px-7 sm:py-5 xl:gap-8 xl:px-12 xl:py-8">
       <div className="flex items-center justify-between gap-4 text-blue-700">

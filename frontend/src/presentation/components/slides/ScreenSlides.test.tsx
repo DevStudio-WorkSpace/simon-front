@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { ServiceItem } from '../../../domain/models';
-import { fireEvent, render, screen, within } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useRemoteControlKeyboard } from '../../../application/hooks/useRemoteControlKeyboard';
 import { useScreenPlayerStore } from '../../../application/store/screenPlayerStore';
 import { mockAnnouncement } from '../../../infrastructure/mocks/announcements.mock';
@@ -37,6 +37,12 @@ function stubDialog() {
 }
 
 describe('Vistas de TV', () => {
+  const initialState = useScreenPlayerStore.getInitialState();
+
+  afterEach(() => {
+    useScreenPlayerStore.setState(initialState);
+  });
+
   it('pagina los servicios de nueve en nueve y deja el terminado al final', () => {
     const extra = {
       ...mockServices[2],
@@ -45,9 +51,7 @@ describe('Vistas de TV', () => {
       time: '08:00',
     };
     const services = [extra, ...mockServices];
-    const { rerender } = render(
-      <ServicesSlide metrics={mockServicesMetrics} services={services} progressPercent={0} />,
-    );
+    render(<ServicesSlide metrics={mockServicesMetrics} services={services} />);
 
     const table = within(screen.getByRole('table'));
     expect(table.getAllByRole('row')).toHaveLength(10);
@@ -55,9 +59,7 @@ describe('Vistas de TV', () => {
     expect(screen.getByText('Página 1/2')).toBeInTheDocument();
     expect(table.queryByText('Terminado')).not.toBeInTheDocument();
 
-    rerender(
-      <ServicesSlide metrics={mockServicesMetrics} services={services} progressPercent={50} />,
-    );
+    act(() => useScreenPlayerStore.setState({ progressPercent: 50 }));
 
     expect(screen.getByText('Página 2/2')).toBeInTheDocument();
     expect(table.getAllByRole('row')).toHaveLength(2);
@@ -67,7 +69,15 @@ describe('Vistas de TV', () => {
   it('recorre las filas con abajo y arriba sin cambiar de vista al editar', () => {
     const initial = useScreenPlayerStore.getState();
     const nextSlide = vi.fn();
-    useScreenPlayerStore.setState({ nextSlide, isPaused: false, progressPercent: 30 });
+    const now = vi.spyOn(performance, 'now').mockReturnValue(3000);
+    useScreenPlayerStore.setState({
+      nextSlide,
+      isLoading: false,
+      isPaused: false,
+      secondsPerSlide: 10,
+      progressPercent: 30,
+      rotationClock: { elapsedMs: 0, startedAt: 0 },
+    });
 
     function Demo() {
       useRemoteControlKeyboard();
@@ -75,7 +85,6 @@ describe('Vistas de TV', () => {
         <ServicesSlide
           metrics={mockServicesMetrics}
           services={mockServices}
-          progressPercent={0}
           onEditService={vi.fn()}
         />
       );
@@ -110,6 +119,7 @@ describe('Vistas de TV', () => {
     } finally {
       unmount();
       useScreenPlayerStore.setState(initial);
+      now.mockRestore();
     }
   });
 
@@ -196,7 +206,6 @@ describe('Vistas de TV', () => {
         <ServicesSlide
           metrics={mockServicesMetrics}
           services={mockServices}
-          progressPercent={0}
           serviceEdits={edits}
           deletedServiceIds={deletedIds}
           onDeleteService={(id) => setDeletedIds((ids) => new Set(ids).add(id))}
@@ -278,16 +287,13 @@ describe('Vistas de TV', () => {
       { ...mockAnnouncement, id: 'inactive', title: 'Oculto', active: false },
       other,
     ];
-    const { rerender } = render(
-      <AnnouncementSlide announcements={announcements} progressPercent={0} secondsPerSlide={10} />,
-    );
+    useScreenPlayerStore.setState({ progressPercent: 0, secondsPerSlide: 10 });
+    render(<AnnouncementSlide announcements={announcements} />);
 
     expect(screen.getByRole('heading', { name: mockAnnouncement.title })).toBeInTheDocument();
     expect(screen.getByLabelText('Segundos para el siguiente anuncio')).toHaveTextContent('5');
 
-    rerender(
-      <AnnouncementSlide announcements={announcements} progressPercent={60} secondsPerSlide={10} />,
-    );
+    act(() => useScreenPlayerStore.setState({ progressPercent: 60 }));
 
     expect(screen.getByRole('heading', { name: other.title })).toBeInTheDocument();
     expect(screen.getByLabelText('Segundos para el siguiente anuncio')).toHaveTextContent('4');

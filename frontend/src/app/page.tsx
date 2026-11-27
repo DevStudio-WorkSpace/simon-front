@@ -6,7 +6,7 @@ import { SlideRenderer, getSlideTitle } from '../presentation/components/slides/
 import { useScreenPlayerStore } from '../application/store/screenPlayerStore';
 
 export default function HomePage() {
-  const { currentSlide } = useScreenPlayerStore();
+  const currentSlide = useScreenPlayerStore((state) => state.currentSlide);
   const title = getSlideTitle(currentSlide);
 
   return (

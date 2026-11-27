@@ -1,7 +1,12 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useScreenPlayerStore } from '../../../application/store/screenPlayerStore';
+import { useShallow } from 'zustand/react/shallow';
+import {
+  getRotationElapsed,
+  selectCurrentView,
+  useScreenPlayerStore,
+} from '../../../application/store/screenPlayerStore';
 import { useRemoteControlKeyboard } from '../../../application/hooks/useRemoteControlKeyboard';
 import { formatSimonDateTime } from '../../../application/hooks/useCurrentDateTime';
 import { ScreenHeader } from './ScreenHeader';
@@ -14,10 +19,18 @@ interface ScreenContainerProps {
 }
 
 export const ScreenContainer: React.FC<ScreenContainerProps> = ({ children, title }) => {
-  const { initialize, tick, data, isLoading, error, getCurrentView, refreshDemoServices } =
-    useScreenPlayerStore();
-
-  const showTicker = getCurrentView()?.tipo !== 'actividades';
+  const { initialize, tick, data, isLoading, error, showTicker, refreshDemoServices } =
+    useScreenPlayerStore(
+      useShallow((state) => ({
+        initialize: state.initialize,
+        tick: state.tick,
+        data: state.data,
+        isLoading: state.isLoading,
+        error: state.error,
+        showTicker: selectCurrentView(state).tipo !== 'actividades',
+        refreshDemoServices: state.refreshDemoServices,
+      })),
+    );
 
   // Listen to remote control and keyboard events
   useRemoteControlKeyboard();
@@ -25,7 +38,25 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({ children, titl
   useEffect(() => {
     initialize('TV-SALA-01');
 
-    const rotation = setInterval(tick, 100);
+    let rotationTimer: ReturnType<typeof setTimeout> | undefined;
+    const scheduleRotation = () => {
+      clearTimeout(rotationTimer);
+      const { rotationClock, secondsPerSlide } = useScreenPlayerStore.getState();
+      if (rotationClock.startedAt === null) return;
+
+      const remaining = secondsPerSlide * 1000 - getRotationElapsed(rotationClock, performance.now());
+      rotationTimer = setTimeout(
+        () => {
+          tick();
+          if (useScreenPlayerStore.getState().rotationClock === rotationClock) scheduleRotation();
+        },
+        Math.min(100, Math.max(1, Math.ceil(remaining))),
+      );
+    };
+    const unsubscribeRotation = useScreenPlayerStore.subscribe((state, previous) => {
+      if (state.rotationClock !== previous.rotationClock) scheduleRotation();
+    });
+    scheduleRotation();
     let stopped = false;
     let pollTimer: ReturnType<typeof setTimeout>;
 
@@ -39,7 +70,8 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({ children, titl
 
     return () => {
       stopped = true;
-      clearInterval(rotation);
+      unsubscribeRotation();
+      clearTimeout(rotationTimer);
       clearTimeout(pollTimer);
     };
   }, [initialize, tick, refreshDemoServices]);

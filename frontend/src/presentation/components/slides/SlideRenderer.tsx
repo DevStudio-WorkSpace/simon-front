@@ -1,8 +1,12 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import type { ServiceItem } from '../../../domain/models';
-import { useScreenPlayerStore } from '../../../application/store/screenPlayerStore';
+import {
+  selectCurrentView,
+  useScreenPlayerStore,
+} from '../../../application/store/screenPlayerStore';
 import { ServicesSlide } from './ServicesSlide';
 import { PunctualitySlide } from './PunctualitySlide';
 import { RankingSlide } from './RankingSlide';
@@ -18,8 +22,9 @@ export function getSlideTitle(_slideIndex?: number): string {
 }
 
 export const SlideRenderer: React.FC = () => {
-  const { data, getCurrentView, progressPercent, secondsPerSlide } = useScreenPlayerStore();
-  const currentView = getCurrentView();
+  const { data, currentView } = useScreenPlayerStore(
+    useShallow((state) => ({ data: state.data, currentView: selectCurrentView(state) })),
+  );
   const [serviceEdits, setServiceEdits] = useState<Partial<Record<string, ServiceItem>>>({});
   const [deletedServiceIds, setDeletedServiceIds] = useState<ReadonlySet<string>>(new Set());
   const isDemo = process.env.NEXT_PUBLIC_DATA_SOURCE !== 'api';
@@ -60,7 +65,6 @@ export const SlideRenderer: React.FC = () => {
         <ServicesSlide
           metrics={data.services.metrics}
           services={data.services.items}
-          progressPercent={progressPercent}
           serviceEdits={serviceEdits}
           deletedServiceIds={deletedServiceIds}
           onEditService={editService}
@@ -76,13 +80,7 @@ export const SlideRenderer: React.FC = () => {
     case 'meta':
       return <GoalSlide data={data.goal} />;
     case 'anuncio':
-      return (
-        <AnnouncementSlide
-          announcements={data.announcements}
-          progressPercent={progressPercent}
-          secondsPerSlide={secondsPerSlide}
-        />
-      );
+      return <AnnouncementSlide announcements={data.announcements} />;
     case 'actividades':
       return <ActivitiesSlide data={data.activities} />;
     default:
@@ -90,7 +88,6 @@ export const SlideRenderer: React.FC = () => {
         <ServicesSlide
           metrics={data.services.metrics}
           services={data.services.items}
-          progressPercent={progressPercent}
           serviceEdits={serviceEdits}
           deletedServiceIds={deletedServiceIds}
           onEditService={editService}

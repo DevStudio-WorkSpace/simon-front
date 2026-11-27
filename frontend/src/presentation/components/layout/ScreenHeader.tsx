@@ -1,26 +1,74 @@
 'use client';
 
-import React from 'react';
-import { useScreenPlayerStore } from '../../../application/store/screenPlayerStore';
+import React, { useLayoutEffect, useRef } from 'react';
+import { useShallow } from 'zustand/react/shallow';
+import {
+  getRotationElapsed,
+  selectCurrentView,
+  useScreenPlayerStore,
+} from '../../../application/store/screenPlayerStore';
 import { useCurrentDateTime } from '../../../application/hooks/useCurrentDateTime';
+
+function PlaybackProgress() {
+  const barRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const bar = barRef.current;
+    if (!bar) return;
+    let animation: Animation | undefined;
+
+    const syncProgress = (state: ReturnType<typeof useScreenPlayerStore.getState>) => {
+      animation?.cancel();
+      const { rotationClock, secondsPerSlide } = state;
+      const duration = secondsPerSlide * 1000;
+      const elapsed = Math.min(duration, getRotationElapsed(rotationClock, performance.now()));
+      const transform = `scaleX(${elapsed / duration})`;
+      bar.style.transform = transform;
+      if (rotationClock.startedAt === null || elapsed >= duration || !bar.animate) return;
+
+      animation = bar.animate([{ transform }, { transform: 'scaleX(1)' }], {
+        duration: duration - elapsed,
+        fill: 'forwards',
+        easing: 'linear',
+      });
+    };
+
+    const unsubscribe = useScreenPlayerStore.subscribe((state, previous) => {
+      if (state.rotationClock !== previous.rotationClock || !bar.animate) syncProgress(state);
+    });
+    syncProgress(useScreenPlayerStore.getState());
+
+    return () => {
+      unsubscribe();
+      animation?.cancel();
+    };
+  }, []);
+
+  return (
+    <div className="relative h-1 w-full overflow-hidden bg-slate-100 sm:h-1.5">
+      <div
+        ref={barRef}
+        className="h-full origin-left scale-x-0 bg-[#E6007E] shadow-[0_0_8px_#E6007E]"
+      />
+    </div>
+  );
+}
 
 interface ScreenHeaderProps {
   title: string;
 }
 
 export const ScreenHeader: React.FC<ScreenHeaderProps> = ({ title }) => {
-  const {
-    currentSlide,
-    totalSlides,
-    isPaused,
-    isEditingServices,
-    progressPercent,
-    getCurrentView,
-  } = useScreenPlayerStore();
+  const { currentSlide, totalSlides, viewTitle, paused } = useScreenPlayerStore(
+    useShallow((state) => ({
+      currentSlide: state.currentSlide,
+      totalSlides: state.totalSlides,
+      viewTitle: selectCurrentView(state).title,
+      paused: state.isPaused || state.isEditingServices,
+    })),
+  );
   const currentDateTime = useCurrentDateTime();
-  const currentView = getCurrentView();
-  const displayTitle = currentView?.title || title;
-  const paused = isPaused || isEditingServices;
+  const displayTitle = viewTitle || title;
   const playbackStatus = paused ? 'En pausa' : 'Reproduciendo';
 
   return (
@@ -77,13 +125,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({ title }) => {
         <h1 className="text-lg font-black text-slate-900 tracking-tight">{displayTitle}</h1>
       </div>
 
-      {/* Magenta Progress bar indicator */}
-      <div className="w-full h-1 sm:h-1.5 bg-slate-100 relative overflow-hidden">
-        <div
-          className="h-full bg-[#E6007E] transition-all duration-100 ease-linear shadow-[0_0_8px_#E6007E]"
-          style={{ width: `${progressPercent}%` }}
-        />
-      </div>
+      <PlaybackProgress />
     </header>
   );
 };

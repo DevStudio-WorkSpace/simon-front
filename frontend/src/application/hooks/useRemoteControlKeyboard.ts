@@ -1,10 +1,18 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { useScreenPlayerStore } from '../store/screenPlayerStore';
 
 export function useRemoteControlKeyboard() {
-  const { nextSlide, prevSlide, togglePause, goToSlide } = useScreenPlayerStore();
+  const { nextSlide, prevSlide, togglePause, goToSlide } = useScreenPlayerStore(
+    useShallow((state) => ({
+      nextSlide: state.nextSlide,
+      prevSlide: state.prevSlide,
+      togglePause: state.togglePause,
+      goToSlide: state.goToSlide,
+    })),
+  );
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

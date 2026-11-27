@@ -31,6 +31,24 @@ function saveStoredViewsConfig(configs: SlideViewConfig[]) {
   }
 }
 
+interface RotationClock {
+  elapsedMs: number;
+  startedAt: number | null;
+}
+
+function getActiveViews(configs: SlideViewConfig[]) {
+  return configs.filter((view) => view.active).sort((a, b) => a.order - b.order);
+}
+
+export function selectCurrentView({ viewsConfig, currentViewIndex }: ScreenPlayerState) {
+  const active = getActiveViews(viewsConfig);
+  return active[currentViewIndex] ?? active[0] ?? viewsConfig[0] ?? DEFAULT_VIEWS_CONFIG[0];
+}
+
+export function getRotationElapsed(clock: RotationClock, now: number) {
+  return clock.elapsedMs + (clock.startedAt === null ? 0 : Math.max(0, now - clock.startedAt));
+}
+
 interface ScreenPlayerState {
   screenCode: string;
   data: ScreenAllData | null;
@@ -42,6 +60,7 @@ interface ScreenPlayerState {
   totalSlides: number;
   secondsPerSlide: number;
   progressPercent: number; // 0 to 100
+  rotationClock: RotationClock;
   isLoading: boolean;
   error: string | null;
 
@@ -51,6 +70,7 @@ interface ScreenPlayerState {
   prevSlide: () => void;
   togglePause: () => void;
   setPause: (paused: boolean) => void;
+  setEditingServices: (editing: boolean) => void;
   goToSlide: (index: number) => void;
   goToViewId: (id: number) => void;
   tick: () => void;
@@ -70,10 +90,32 @@ interface ScreenPlayerState {
 
 export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
   const initialViews = loadStoredViewsConfig();
-  const getActive = (configs: SlideViewConfig[]) =>
-    configs.filter((v) => v.active).sort((a, b) => a.order - b.order);
+  const initialActive = getActiveViews(initialViews);
 
-  const initialActive = getActive(initialViews);
+  function updatePlayback(patch: Partial<ScreenPlayerState>, restart = false) {
+    const state = get();
+    const next = { ...state, ...patch };
+    const secondsPerSlide = selectCurrentView(next).seconds || 10;
+    const running = !next.isLoading && !next.isPaused && !next.isEditingServices;
+    const runningBefore = state.rotationClock.startedAt !== null;
+
+    if (!restart && secondsPerSlide === state.secondsPerSlide && running === runningBefore) {
+      set({ ...patch, secondsPerSlide });
+      return;
+    }
+
+    const now = performance.now();
+    const progress = restart
+      ? 0
+      : Math.min(1, getRotationElapsed(state.rotationClock, now) / (state.secondsPerSlide * 1000));
+
+    set({
+      ...patch,
+      secondsPerSlide,
+      progressPercent: progress * 100,
+      rotationClock: { elapsedMs: progress * secondsPerSlide * 1000, startedAt: running ? now : null },
+    });
+  }
 
   return {
     screenCode: 'TV-SALA-01',
@@ -86,59 +128,48 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
     totalSlides: initialActive.length || 6,
     secondsPerSlide: initialActive[0]?.seconds || 10,
     progressPercent: 0,
+    rotationClock: { elapsedMs: 0, startedAt: null },
     isLoading: true,
     error: null,
 
-    getActiveViews: () => {
-      const { viewsConfig } = get();
-      return viewsConfig.filter((v) => v.active).sort((a, b) => a.order - b.order);
-    },
+    getActiveViews: () => getActiveViews(get().viewsConfig),
 
-    getCurrentView: () => {
-      const active = get().getActiveViews();
-      const { currentViewIndex } = get();
-      if (active.length === 0) {
-        return get().viewsConfig[0] || DEFAULT_VIEWS_CONFIG[0];
-      }
-      return active[currentViewIndex] || active[0];
-    },
+    getCurrentView: () => selectCurrentView(get()),
 
     initialize: async (code: string) => {
       try {
-        set({ isLoading: true, screenCode: code });
+        updatePlayback({ isLoading: true, screenCode: code });
         const initialData = await screenRepository.getAllScreenData(code);
         const storedViews = loadStoredViewsConfig();
-        const active = storedViews.filter((v) => v.active).sort((a, b) => a.order - b.order);
+        const active = getActiveViews(storedViews);
 
-        set({
-          data: initialData,
-          viewsConfig: storedViews,
-          totalSlides: active.length || 6,
-          secondsPerSlide: active[0]?.seconds || 10,
-          currentSlide: 1,
-          currentViewIndex: 0,
-          isPaused: initialData.screenState.isPaused,
-          progressPercent: 0,
-          isLoading: false,
-          error: null,
-        });
+        updatePlayback(
+          {
+            data: initialData,
+            viewsConfig: storedViews,
+            totalSlides: active.length || 6,
+            currentSlide: 1,
+            currentViewIndex: 0,
+            isPaused: initialData.screenState.isPaused,
+            isLoading: false,
+            error: null,
+          },
+          true,
+        );
 
         // Setup sync across tabs and local events if in browser
         if (typeof window !== 'undefined') {
           const syncHandler = (_e: StorageEvent | CustomEvent) => {
             const updatedViews = loadStoredViewsConfig();
-            const activeNow = updatedViews
-              .filter((v) => v.active)
-              .sort((a, b) => a.order - b.order);
+            const activeNow = getActiveViews(updatedViews);
             const { currentViewIndex } = get();
             const safeIndex = currentViewIndex >= activeNow.length ? 0 : currentViewIndex;
 
-            set({
+            updatePlayback({
               viewsConfig: updatedViews,
               totalSlides: activeNow.length || 1,
               currentViewIndex: safeIndex,
               currentSlide: safeIndex + 1,
-              secondsPerSlide: activeNow[safeIndex]?.seconds || 10,
             });
           };
 
@@ -158,12 +189,7 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
       if (active.length === 0) return;
       const { currentViewIndex, screenCode } = get();
       const nextIndex = (currentViewIndex + 1) % active.length;
-      set({
-        currentViewIndex: nextIndex,
-        currentSlide: nextIndex + 1,
-        secondsPerSlide: active[nextIndex]?.seconds || 10,
-        progressPercent: 0,
-      });
+      updatePlayback({ currentViewIndex: nextIndex, currentSlide: nextIndex + 1 }, true);
       screenRepository.sendOrder(screenCode, 'siguiente');
     },
 
@@ -172,26 +198,22 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
       if (active.length === 0) return;
       const { currentViewIndex, screenCode } = get();
       const prevIndex = currentViewIndex <= 0 ? active.length - 1 : currentViewIndex - 1;
-      set({
-        currentViewIndex: prevIndex,
-        currentSlide: prevIndex + 1,
-        secondsPerSlide: active[prevIndex]?.seconds || 10,
-        progressPercent: 0,
-      });
+      updatePlayback({ currentViewIndex: prevIndex, currentSlide: prevIndex + 1 }, true);
       screenRepository.sendOrder(screenCode, 'anterior');
     },
 
     togglePause: () => {
-      const { isPaused, screenCode } = get();
-      const newPause = !isPaused;
-      set({ isPaused: newPause });
-      screenRepository.sendOrder(screenCode, newPause ? 'pausa' : 'play');
+      get().setPause(!get().isPaused);
     },
 
     setPause: (paused: boolean) => {
       const { screenCode } = get();
-      set({ isPaused: paused });
+      updatePlayback({ isPaused: paused });
       screenRepository.sendOrder(screenCode, paused ? 'pausa' : 'play');
+    },
+
+    setEditingServices: (editing) => {
+      if (editing !== get().isEditingServices) updatePlayback({ isEditingServices: editing });
     },
 
     goToSlide: (index: number) => {
@@ -199,12 +221,7 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
       if (active.length === 0) return;
       const { screenCode } = get();
       const targetIndex = Math.max(0, Math.min(index - 1, active.length - 1));
-      set({
-        currentViewIndex: targetIndex,
-        currentSlide: targetIndex + 1,
-        secondsPerSlide: active[targetIndex]?.seconds || 10,
-        progressPercent: 0,
-      });
+      updatePlayback({ currentViewIndex: targetIndex, currentSlide: targetIndex + 1 }, true);
       screenRepository.sendOrder(screenCode, 'ir_a', targetIndex + 1);
     },
 
@@ -217,20 +234,15 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
     },
 
     tick: () => {
-      const { isPaused, isEditingServices, progressPercent } = get();
-      if (isPaused || isEditingServices) return;
+      const { rotationClock, secondsPerSlide, progressPercent } = get();
+      if (rotationClock.startedAt === null) return;
 
-      const currentView = get().getCurrentView();
-      const seconds = currentView?.seconds || 10;
-
-      // Tick every 100ms
-      const step = 100 / (seconds * 10);
-      const newPercent = progressPercent + step;
-
-      if (newPercent >= 100) {
+      const elapsed = getRotationElapsed(rotationClock, performance.now());
+      const nextPercent = (elapsed / (secondsPerSlide * 1000)) * 100;
+      if (nextPercent >= 100) {
         get().nextSlide();
-      } else {
-        set({ progressPercent: newPercent });
+      } else if (nextPercent !== progressPercent) {
+        set({ progressPercent: nextPercent });
       }
     },
 
@@ -273,9 +285,8 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
       }));
 
       saveStoredViewsConfig(reordered);
-      const active = reordered.filter((v) => v.active).sort((a, b) => a.order - b.order);
-
-      set({
+      const active = getActiveViews(reordered);
+      updatePlayback({
         viewsConfig: reordered,
         totalSlides: active.length || 1,
       });
@@ -302,9 +313,8 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
       }));
 
       saveStoredViewsConfig(reordered);
-      const active = reordered.filter((v) => v.active).sort((a, b) => a.order - b.order);
-
-      set({
+      const active = getActiveViews(reordered);
+      updatePlayback({
         viewsConfig: reordered,
         totalSlides: active.length || 1,
       });
@@ -317,7 +327,7 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
       const updated = viewsConfig.map((v) => (v.id === id ? { ...v, seconds: safe } : v));
 
       saveStoredViewsConfig(updated);
-      set({ viewsConfig: updated });
+      updatePlayback({ viewsConfig: updated });
     },
 
     toggleViewActive: (id: number) => {
@@ -334,15 +344,15 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
       const updated = viewsConfig.map((v) => (v.id === id ? { ...v, active: !v.active } : v));
 
       saveStoredViewsConfig(updated);
-      const active = updated.filter((v) => v.active).sort((a, b) => a.order - b.order);
-
-      set({
-        viewsConfig: updated,
-        totalSlides: active.length || 1,
-        currentViewIndex: 0,
-        currentSlide: 1,
-        progressPercent: 0,
-      });
+      updatePlayback(
+        {
+          viewsConfig: updated,
+          totalSlides: getActiveViews(updated).length || 1,
+          currentViewIndex: 0,
+          currentSlide: 1,
+        },
+        true,
+      );
     },
 
     setGlobalSeconds: (seconds: number) => {
@@ -352,25 +362,21 @@ export const useScreenPlayerStore = create<ScreenPlayerState>((set, get) => {
       const updated = viewsConfig.map((v) => ({ ...v, seconds: clamped }));
 
       saveStoredViewsConfig(updated);
-      set({
-        viewsConfig: updated,
-        secondsPerSlide: clamped,
-      });
+      updatePlayback({ viewsConfig: updated });
     },
 
     resetToDefaultViews: () => {
       const defaults = DEFAULT_VIEWS_CONFIG.map((v) => ({ ...v }));
       saveStoredViewsConfig(defaults);
-      const active = defaults.filter((v) => v.active).sort((a, b) => a.order - b.order);
-
-      set({
-        viewsConfig: defaults,
-        totalSlides: active.length,
-        secondsPerSlide: 10,
-        currentSlide: 1,
-        currentViewIndex: 0,
-        progressPercent: 0,
-      });
+      updatePlayback(
+        {
+          viewsConfig: defaults,
+          totalSlides: getActiveViews(defaults).length,
+          currentSlide: 1,
+          currentViewIndex: 0,
+        },
+        true,
+      );
     },
   };
 });
